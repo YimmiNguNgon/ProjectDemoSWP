@@ -1,0 +1,142 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Feb 24, 2025, 11:04:23 AM
+    Author     : Huy
+*/
+/* 🌟 Tổng thể trang */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+/* 🌟 Header */
+header {
+    background: #007bff;
+    padding: 15px;
+    text-align: center;
+}
+
+header .container nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+header .container nav ul li {
+    display: inline;
+    margin: 0 15px;
+}
+
+header .container nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+header .container nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* 🌟 Danh sách khóa học */
+.course-list {
+    width: 90%;
+    max-width: 900px;
+    background: white;
+    margin: 30px auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.course-list h2 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* 🌟 Bảng khóa học */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+thead {
+    background: #007bff;
+    color: white;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+tbody tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+/* 🌟 Nút chỉnh sửa và xóa */
+.edit-btn {
+    padding: 8px 12px;
+    background: #ffc107;
+    color: black;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.edit-btn:hover {
+    background: #e0a800;
+}
+
+.delete-btn {
+    padding: 8px 12px;
+    background: #dc3545;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.delete-btn:hover {
+    background: #c82333;
+}
+
+/* 🌟 Nút thêm khóa học */
+.btn {
+    display: block;
+    width: 200px;
+    margin: 20px auto;
+    padding: 12px;
+    font-size: 18px;
+    background: #28a745;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+    transition: 0.3s;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background: #218838;
+    transform: scale(1.05);
+}
+
+/* 🌟 Footer */
+footer {
+    background: #007bff;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+
