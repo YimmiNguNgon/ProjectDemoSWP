@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/src/java/controller_tutor/TutorCoursesServlet.java</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/src/java/controller/DeleteAccount.java</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/src/java/controller/EditAccount.java</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/src/java/model/Courses.java</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/src/java/dal/TutorDAO.java</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/web/hometutor.jsp</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/src/java/controller_tutor/ScheduleServlet.java</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/web/addschedule.jsp</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/src/java/controller_tutor/EditProfileTutorServlet.java</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/src/java/controller/LoadAccount.java</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/web/editprofiletutor.jsp</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/web/profileuser.jsp</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/web/tutorcourses.jsp</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/web/homeuser.jsp</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/web/login.jsp</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/src/java/model/Account.java</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/src/java/controller_tutor/AddCoursesServlet.java</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/src/java/controller/ManagerServlet.java</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/src/java/controller/AddServlet.java</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/src/java/controller_tutor/EditCourseServlet.java</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/web/editCourse.jsp</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/src/java/model/Student.java</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/src/java/controller_tutor/TutorHomeServlet.java</file>
+            <file>file:/D:/1.Tài%20liệu%20FPT/kì%205/WebApplication1/web/WEB-INF/web.xml</file>
+        </group>
+    </open-files>
+</project-private>
