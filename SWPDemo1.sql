@@ -17,11 +17,7 @@ CREATE TABLE Users (
 	image_url NVARCHAR(255)
 
 );
-ALTER TABLE Users
-ADD image_url NVARCHAR(255); -- Thêm trường image_url vào bảng Users
-ALTER TABLE Users
-ADD Gender NVARCHAR(10) CHECK (Gender IN ('Nam', 'Nữ')), -- Giới tính với giá trị cố định
-    Address NVARCHAR(255);
+
 UPDATE Users
 SET image_url = 'https://cdn.alongwalk.info/info/wp-content/uploads/2022/08/11051746/image-10-tiem-chup-anh-the-lay-ngay-dep-nhat-tp-vinh-nghe-an-166014466587924.jpg'  -- Đặt đường dẫn ảnh cho người dùng
 WHERE UserID = 3;
@@ -29,6 +25,7 @@ CREATE TABLE Role (
     role_id INT PRIMARY KEY IDENTITY(1,1),
     role_name NVARCHAR(20) NOT NULL UNIQUE
 );
+
 SET IDENTITY_INSERT [dbo].[Role] ON 
 
 INSERT INTO [dbo].[Role] ([role_id], [role_name]) 
@@ -68,28 +65,7 @@ CREATE TABLE Courses (
     TotalSessions int,
 	CourseStatus NVARCHAR(20) DEFAULT 'Ongoing' CHECK (CourseStatus IN ('Ongoing', 'Stopped', 'Completed'))
 );
-UPDATE Courses SET TotalSessions = 25 WHERE CourseID = 22; -- Ví dụ khóa 1 có 20 buổi
-UPDATE Courses SET TotalSessions = 25 WHERE CourseID = 23; 
 
-UPDATE Courses SET TotalSessions = 20 WHERE CourseID = 1; -- Ví dụ khóa 1 có 20 buổi
-UPDATE Courses SET TotalSessions = 15 WHERE CourseID = 2; -- Ví dụ khóa 2 có 15 buổi
-UPDATE Courses SET TotalSessions = 25 WHERE CourseID = 3; -- Ví dụ khóa 3 có 25 buổi
-INSERT INTO Courses (CourseName, Description, Level, Price, Rating, Category)
-VALUES 
-(N'English for Beginners', N'Học tiếng Anh cơ bản', 'Beginner', 100000, 4.5, 'Language'),
-(N'Math 101', N'Môn Toán cơ bản', 'Beginner', 150000, 4.2, 'Mathematics'),
-(N'Biology 101', N'Môn Sinh cơ bản', 'Beginner', 150000, 4.2, 'Biology');
-INSERT INTO Courses (CourseName, Description, Level, Price, Rating, Category)
-VALUES 
--- Khóa học cấp độ Intermediate
-(N'English Intermediate', N'Học tiếng Anh trình độ trung cấp', 'Intermediate', 120000, 4.6, 'Language'),
-(N'Math Intermediate', N'Môn Toán trình độ trung cấp', 'Intermediate', 170000, 4.3, 'Mathematics'),
-(N'Biology Intermediate', N'Môn Sinh trình độ trung cấp', 'Intermediate', 180000, 4.4, 'Biology'),
-
--- Khóa học cấp độ Advanced
-(N'English Advanced', N'Học tiếng Anh trình độ cao cấp', 'Advanced', 140000, 4.8, 'Language'),
-(N'Math Advanced', N'Môn Toán trình độ cao cấp', 'Advanced', 200000, 4.5, 'Mathematics'),
-(N'Biology Advanced', N'Môn Sinh trình độ cao cấp', 'Advanced', 220000, 4.7, 'Biology');
 
 -- Bảng: Tutors
 CREATE TABLE Tutors (
@@ -102,11 +78,6 @@ CREATE TABLE Tutors (
     FOREIGN KEY (UserID) REFERENCES Users(UserID) -- Ràng buộc khóa ngoại liên kết với Users
 );
 
-INSERT INTO Tutors (UserID, Education, Experience, HourlyRate, Verified)
-VALUES 
-(3, N'Giáo viên Tiếng Anh, Cử nhân Đại học Sư phạm', N'5 năm giảng dạy Tiếng Anh', 250000, 1), -- Gia sư 1
-(4, N'Giáo viên Toán học, Cử nhân Đại học Khoa học Tự nhiên', N'3 năm giảng dạy Toán', 200000, 0), -- Gia sư 2
-(5, N'Giáo viên Sinh học, Cử nhân Đại học Khoa học Tự nhiên', N'8 năm giảng dạy Sinh ', 300000, 0)-- Gia sư 3
 CREATE TABLE TutorCourses (
     TutorCourseID INT PRIMARY KEY IDENTITY(1,1), -- ID tự tăng
     TutorID INT NOT NULL, -- Khóa ngoại tham chiếu đến Tutors
@@ -134,11 +105,10 @@ CREATE TABLE Students (
     FOREIGN KEY (UserID) REFERENCES Users(UserID), -- Ràng buộc khóa ngoại liên kết với Users
     FOREIGN KEY (CourseID) REFERENCES Courses(CourseID) -- Ràng buộc khóa ngoại liên kết với Courses
 );
--- Cập nhật bảng Students để lưu trạng thái của học sinh trong khóa học
-ALTER TABLE Students
-ADD Progress INT DEFAULT 0,  -- Số buổi đã hoàn thành
-    StudentStatus NVARCHAR(20) DEFAULT 'Enrolled' CHECK (StudentStatus IN ('Enrolled', 'Dropped', 'Completed'));
--- Thêm học sinh vào bảng Students
+
+ALTER TABLE Students ADD completedSessions INT DEFAULT 0;
+drop 
+
 INSERT INTO Students (UserID, CourseID)
 VALUES 
 (4, 1),  -- Học sinh với UserID = 4 tham gia khóa học 1
@@ -151,7 +121,73 @@ INSERT INTO Students (StudentID, UserID, CourseID, DateJoined)
 VALUES (1, 4, 1, GETDATE());  
 
 SET IDENTITY_INSERT Students OFF;
+--quản lý khóa học của học sinh
 
+CREATE TABLE StudentCourses (
+    StudentID INT NOT NULL,
+    CourseID INT NOT NULL,
+    completedSessions INT DEFAULT 0, 
+    Status NVARCHAR(20) DEFAULT 'Đang diễn ra' 
+        CHECK (Status IN ('Đang diễn ra', 'Hoàn thành')),
+    PRIMARY KEY (StudentID, CourseID),
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+    FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
+);
+UPDATE StudentCourses 
+SET completedSessions = completedSessions + 1;
+
+-- Trigger tự động cập nhật trạng thái khi hoàn thành khóa học
+CREATE TRIGGER trg_UpdateCourseStatus
+ON StudentCourses
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    UPDATE sc
+    SET Status = 'Hoàn thành'
+    FROM StudentCourses sc
+    JOIN inserted i ON sc.StudentID = i.StudentID AND sc.CourseID = i.CourseID
+    JOIN Courses c ON sc.CourseID = c.CourseID
+    WHERE i.completedSessions >= c.TotalSessions;
+END;
+
+-- Bảng lưu từng buổi học của học sinh
+CREATE TABLE CourseSessions (
+    SessionID INT PRIMARY KEY IDENTITY(1,1), 
+    StudentID INT NOT NULL,  
+    CourseID INT NOT NULL,
+    SessionNumber INT NOT NULL,  -- Buổi số mấy trong khóa học
+    Attended BIT DEFAULT 0,  -- Học sinh đã tham gia hay chưa
+    SessionDate DATETIME NOT NULL,  
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+    FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
+);
+
+-- Bảng lưu thông tin xin nghỉ học
+CREATE TABLE Absences (
+    AbsenceID INT PRIMARY KEY IDENTITY(1,1),
+    StudentID INT NOT NULL,
+    SessionID INT NOT NULL,
+    Reason NVARCHAR(255),  -- Lý do xin nghỉ
+    Status NVARCHAR(20) DEFAULT 'Pending' CHECK (Status IN ('Pending', 'Approved', 'Rejected')),  
+    RequestDate DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+    FOREIGN KEY (SessionID) REFERENCES CourseSessions(SessionID)
+);
+
+-- Tạo bảng lưu đánh giá của học sinh sau mỗi buổi học
+CREATE TABLE SessionReviews (
+    ReviewID INT PRIMARY KEY IDENTITY(1,1),
+    StudentID INT NOT NULL,
+    SessionID INT NOT NULL,
+    Rating INT CHECK (Rating BETWEEN 1 AND 5), -- Đánh giá từ 1 đến 5 sao
+    Comment NVARCHAR(MAX), -- Nhận xét của học sinh
+    ReviewStatus NVARCHAR(10) CHECK (ReviewStatus IN ('25%', '50%', '75%', '100%')), -- Trạng thái review
+    ReviewDate DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+    FOREIGN KEY (SessionID) REFERENCES CourseSessions(SessionID)
+);
 -- Bảng: Schedules
 CREATE TABLE Schedules (
     ScheduleID INT PRIMARY KEY IDENTITY(1,1), -- Khóa chính, tự động tăng giá trị
