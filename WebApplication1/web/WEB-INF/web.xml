@@ -9,6 +9,10 @@
         <servlet-class>controller_tutor.ScheduleServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>TutorListServlet</servlet-name>
+        <servlet-class>controller_tutor.TutorListServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>addscheduleservlet</servlet-name>
         <servlet-class>controller_tutor.AddScheduleServlet</servlet-class>
     </servlet>
@@ -23,6 +27,46 @@
     <servlet>
         <servlet-name>editcourseservlet</servlet-name>
         <servlet-class>controller_tutor.EditCourseServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ManagerServlet</servlet-name>
+        <servlet-class>controller.ManagerServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteAccount</servlet-name>
+        <servlet-class>controller.DeleteAccount</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddAccount</servlet-name>
+        <servlet-class>controller.AddAccount</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddServlet</servlet-name>
+        <servlet-class>controller.AddServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LoadAccount</servlet-name>
+        <servlet-class>controller.LoadAccount</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditAccount</servlet-name>
+        <servlet-class>controller.EditAccount</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>BookingServlet</servlet-name>
+        <servlet-class>controller_tutor.BookingServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>FeedbackServlet</servlet-name>
+        <servlet-class>controller_tutor.FeedbackServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>deletecourseservlet</servlet-name>
+        <servlet-class>controller_tutor.DeleteCourseServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EncryptionServlet</servlet-name>
+        <servlet-class>controller.EncryptionServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>profiletutordetail</servlet-name>
@@ -63,5 +107,53 @@
     <servlet-mapping>
         <servlet-name>editcourseservlet</servlet-name>
         <url-pattern>/editcourseservlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ManagerServlet</servlet-name>
+        <url-pattern>/manager</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteAccount</servlet-name>
+        <url-pattern>/deleteaccount</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddAccount</servlet-name>
+        <url-pattern>/AddAccount</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddServlet</servlet-name>
+        <url-pattern>/addaccount</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoadAccount</servlet-name>
+        <url-pattern>/loadaccount</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditAccount</servlet-name>
+        <url-pattern>/editaccount</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FeedbackServlet</servlet-name>
+        <url-pattern>/FeedbackServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TutorListServlet</servlet-name>
+        <url-pattern>/tutors</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>deletecourseservlet</servlet-name>
+        <url-pattern>/deletecourseservlet</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>controller.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/LogoutServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EncryptionServlet</servlet-name>
+        <url-pattern>/EncryptionServlet</url-pattern>
     </servlet-mapping>
 </web-app>
