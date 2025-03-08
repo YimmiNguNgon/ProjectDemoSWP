@@ -13,12 +13,18 @@ CREATE TABLE Users (
     Password NVARCHAR(100) NOT NULL, -- Thêm trường Password
     Phone NVARCHAR(15),-- Số điện thoại (không bắt buộc)
 	Gender NVARCHAR(10) CHECK (Gender IN ('Nam', 'Nữ')), -- Giới tính với giá trị cố định
-    Address NVARCHAR(255)
+    Address NVARCHAR(255),
+	image_url NVARCHAR(255)
+
 );
+ALTER TABLE Users
+ADD image_url NVARCHAR(255); -- Thêm trường image_url vào bảng Users
 ALTER TABLE Users
 ADD Gender NVARCHAR(10) CHECK (Gender IN ('Nam', 'Nữ')), -- Giới tính với giá trị cố định
     Address NVARCHAR(255);
-
+UPDATE Users
+SET image_url = 'https://cdn.alongwalk.info/info/wp-content/uploads/2022/08/11051746/image-10-tiem-chup-anh-the-lay-ngay-dep-nhat-tp-vinh-nghe-an-166014466587924.jpg'  -- Đặt đường dẫn ảnh cho người dùng
+WHERE UserID = 3;
 CREATE TABLE Role (
     role_id INT PRIMARY KEY IDENTITY(1,1),
     role_name NVARCHAR(20) NOT NULL UNIQUE
@@ -50,7 +56,8 @@ VALUES
 (4, N' Hà Đức N', 'student2@gmail.com', '123456', '0336143030'),
 (4, N' Nguyễn Minh Đ', 'student3@gmail.com', '123456', '0336141111'),
 (4, N' Nguyễn Vũ Tường V', 'student4@gmail.com', '123456', '0336142222');
-
+ALTER TABLE Courses 
+ADD CourseStatus NVARCHAR(20) DEFAULT 'Ongoing' CHECK (CourseStatus IN ('Ongoing', 'Stopped', 'Completed'));
 CREATE TABLE Courses (
     CourseID INT PRIMARY KEY IDENTITY(1,1), -- Khóa chính, tự động tăng giá trị
     CourseName NVARCHAR(100) NOT NULL, -- Tên khóa học
@@ -58,8 +65,15 @@ CREATE TABLE Courses (
     Level NVARCHAR(20) NOT NULL CHECK (Level IN ('Beginner', 'Intermediate', 'Advanced')), -- Cấp độ khóa học
     Price DECIMAL(10, 2) NOT NULL, -- Giá của khóa học
     Rating FLOAT, -- Đánh giá trung bình của khóa học
-    Category NVARCHAR(50) NOT NULL -- Thêm trường Category
+    TotalSessions int,
+	CourseStatus NVARCHAR(20) DEFAULT 'Ongoing' CHECK (CourseStatus IN ('Ongoing', 'Stopped', 'Completed'))
 );
+UPDATE Courses SET TotalSessions = 25 WHERE CourseID = 22; -- Ví dụ khóa 1 có 20 buổi
+UPDATE Courses SET TotalSessions = 25 WHERE CourseID = 23; 
+
+UPDATE Courses SET TotalSessions = 20 WHERE CourseID = 1; -- Ví dụ khóa 1 có 20 buổi
+UPDATE Courses SET TotalSessions = 15 WHERE CourseID = 2; -- Ví dụ khóa 2 có 15 buổi
+UPDATE Courses SET TotalSessions = 25 WHERE CourseID = 3; -- Ví dụ khóa 3 có 25 buổi
 INSERT INTO Courses (CourseName, Description, Level, Price, Rating, Category)
 VALUES 
 (N'English for Beginners', N'Học tiếng Anh cơ bản', 'Beginner', 100000, 4.5, 'Language'),
@@ -120,7 +134,10 @@ CREATE TABLE Students (
     FOREIGN KEY (UserID) REFERENCES Users(UserID), -- Ràng buộc khóa ngoại liên kết với Users
     FOREIGN KEY (CourseID) REFERENCES Courses(CourseID) -- Ràng buộc khóa ngoại liên kết với Courses
 );
-
+-- Cập nhật bảng Students để lưu trạng thái của học sinh trong khóa học
+ALTER TABLE Students
+ADD Progress INT DEFAULT 0,  -- Số buổi đã hoàn thành
+    StudentStatus NVARCHAR(20) DEFAULT 'Enrolled' CHECK (StudentStatus IN ('Enrolled', 'Dropped', 'Completed'));
 -- Thêm học sinh vào bảng Students
 INSERT INTO Students (UserID, CourseID)
 VALUES 
@@ -153,6 +170,22 @@ VALUES
 (2, 3, 'Tuesday', '09:00:00', '11:00:00'),
 (3, 4, 'Wednesday', '10:00:00', '12:00:00'),
 (1, 5, 'Friday', '14:00:00', '16:00:00');  -- Gia sư 1 dạy học sinh 2 vào Thứ Sáu từ 14:00 đến 16:00
+
+
+CREATE TABLE CourseRequests (
+    RequestID INT PRIMARY KEY IDENTITY(1,1),  -- Khóa chính, tự động tăng giá trị
+    StudentID INT NOT NULL,  -- Khóa ngoại liên kết với bảng Students
+    TutorID INT NOT NULL,    -- Khóa ngoại liên kết với bảng Tutors
+    CourseID INT NOT NULL,   -- Khóa ngoại liên kết với bảng Courses
+    RequestDate DATETIME DEFAULT GETDATE(),  -- Ngày gửi yêu cầu đăng ký
+    Status NVARCHAR(20) DEFAULT 'Pending' CHECK (Status IN ('Pending', 'Accepted', 'Rejected')),  -- Trạng thái yêu cầu (Chờ, Đã xác nhận, Đã từ chối)
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),  -- Ràng buộc khóa ngoại liên kết với Students
+    FOREIGN KEY (TutorID) REFERENCES Tutors(TutorID),  -- Ràng buộc khóa ngoại liên kết với Tutors
+    FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)  -- Ràng buộc khóa ngoại liên kết với Courses
+);
+
+
+
 -- Bảng: Feedback
 CREATE TABLE Feedback (
     FeedbackID INT PRIMARY KEY IDENTITY(1,1), -- Khóa chính, tự động tăng giá trị
@@ -165,6 +198,8 @@ CREATE TABLE Feedback (
     FOREIGN KEY (TutorID) REFERENCES Tutors(TutorID), -- Ràng buộc khóa ngoại liên kết với Tutors
     FOREIGN KEY (CourseID) REFERENCES Courses(CourseID) -- Ràng buộc khóa ngoại liên kết với Courses
 );
+
+
 
 -- Bảng: Bookings
 CREATE TABLE Bookings (
@@ -182,6 +217,19 @@ CREATE TABLE Bookings (
     FOREIGN KEY (CourseID) REFERENCES Courses(CourseID), -- Ràng buộc khóa ngoại liên kết với Courses
     FOREIGN KEY (ScheduleID) REFERENCES Schedules(ScheduleID), -- Ràng buộc khóa ngoại liên kết với Schedules
     CONSTRAINT UC_Booking UNIQUE (StudentID, TutorID, Date, StartTime) -- Đảm bảo không có lịch học trùng lặp
+);
+
+-- Tạo bảng lưu đánh giá của học sinh sau mỗi buổi học
+CREATE TABLE SessionReviews (
+    ReviewID INT PRIMARY KEY IDENTITY(1,1),
+    StudentID INT NOT NULL,
+    SessionID INT NOT NULL,
+    Rating INT CHECK (Rating BETWEEN 1 AND 5), -- Đánh giá từ 1 đến 5 sao
+    Comment NVARCHAR(MAX), -- Nhận xét của học sinh
+    ReviewStatus NVARCHAR(10) CHECK (ReviewStatus IN ('25%', '50%', '75%', '100%')), -- Trạng thái review
+    ReviewDate DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+    FOREIGN KEY (SessionID) REFERENCES CourseSessions(SessionID)
 );
 
 -- Bảng: Payments
@@ -277,3 +325,5 @@ CREATE TABLE TutorEvaluations (
     FOREIGN KEY (TutorID) REFERENCES Tutors(TutorID), -- Ràng buộc khóa ngoại liên kết với Tutors
     FOREIGN KEY (StudentID) REFERENCES Students(StudentID) -- Ràng buộc khóa ngoại liên kết với Students
 );
+
+
