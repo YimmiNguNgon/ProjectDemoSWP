@@ -12,7 +12,7 @@
     <body>
 
         <header>
-            <div class="container">
+            <div class="container_header">
                 <nav>
                     <ul>
                         <li><a href="hometutor.jsp">Trang Chủ</a></li>
@@ -20,7 +20,7 @@
                         <li><a href="tutorcoursesservlet">Khóa Học</a></li>
                         <li><a href="ManageReservation">Đặt lịch</a></li>
                         <li><a href="scheduleservlet">Lịch Dạy</a></li>
-                        <li><a href="contact.jsp">Liên Hệ</a></li>
+                        <li><a href="attendance.jsp">Điểm Danh</a></li>
 
                     </ul>
                 </nav>
@@ -37,6 +37,8 @@
                             <th>Mô Tả</th>
                             <th>Cấp Độ</th>
                             <th>Giá (VNĐ)</th>
+                            <th>Số Buổi</th>
+                            
                             <th>Hành Động</th>
                         </tr>
                     </thead>
@@ -47,8 +49,11 @@
                                 <td>${course.description}</td>
                                 <td>${course.level}</td>
                                 <td>${course.price}</td>
+                                <td>${course.totalSessions}</td>
+                                
                                 <td style="text-align: center;">
                                     <div style="display: flex; justify-content: center; gap: 10px;">
+                                        <!-- Nút chỉnh sửa -->
                                         <a 
                                             class="edit-btn" 
                                             data-courseid="${course.courseID}" 
@@ -56,15 +61,14 @@
                                             data-description="${course.description}" 
                                             data-level="${course.level}" 
                                             data-price="${course.price}" 
+                                            data-totalsessions="${course.totalSessions}" 
+                                            data-coursestatus="${course.courseStatus}" 
                                             onclick="showPopupEdit(event, this)">
-                                            Chỉnh Sửa
+                                            📝 Chỉnh Sửa
                                         </a>
 
-                                        <a href="javascript:void(0);" 
-                                            onclick="deleteCourse(${course.courseID});" 
-                                            class="delete-btn">
-                                            Xóa
-                                        </a>
+                                        <!-- Nút xóa -->
+                                        <a href="javascript:void(0);" class="delete-btn" onclick="deleteCourse('${course.courseID}', this);">🗑️ Xóa</a>
                                     </div>
                                 </td>
                             </tr>
@@ -102,7 +106,11 @@
                     <input type="number" id="price" name="price" required>
                     <!--            <label for="cat">Category</label>
                                 <input type="text" id="category" name="category" required>-->
+                    <label for="totalSessions">Số Buổi Học:</label>
+                    <input type="number" id="totalSessions" name="totalSessions" required>
 
+                    
+                    
                     <button type="submit" class="add-btn">Lưu Khóa Học</button>
                 </form>
             </div>
@@ -119,10 +127,10 @@
                     <input type="hidden" id="courseEditID" name="courseID">
 
                     <label for="courseName">Tên Khóa Học:</label>
-                    <input type="text" id="courseEditName" name="courseName" required>
+                    <input type="text" id="courseEditName" name="courseName" required placeholder="Nhập tên khóa học">
 
                     <label for="description">Mô Tả:</label>
-                    <textarea id="descriptionEdit" name="description" required></textarea>
+                    <textarea id="descriptionEdit" name="description" required placeholder="Nhập mô tả khóa học"></textarea>
 
                     <label for="level">Cấp Độ:</label>
                     <select id="levelEdit" name="level" required>
@@ -132,9 +140,16 @@
                     </select>
 
                     <label for="price">Giá (VNĐ):</label>
-                    <input type="number" id="priceEdit" name="price" required>
+                    <input type="number" id="priceEdit" name="price" min="0" step="1000" required placeholder="Nhập giá khóa học">
 
-                    <button type="submit" class="custom-btn">Lưu Khóa Học</button>
+                    <!-- ✅ Thêm số buổi học -->
+                    <label for="totalSessions">Số Buổi Học:</label>
+                    <input type="number" id="totalSessionsEdit" name="totalSessions" min="1" required placeholder="Nhập số buổi học">
+
+                   
+                    
+
+                    <button type="submit" class="custom-btn" onclick="return confirm('Bạn có chắc chắn muốn lưu thay đổi?')">Lưu Khóa Học</button>
                 </form>
             </div>
         </div>
@@ -243,6 +258,7 @@
                                             "<td>" + data.description + "</td>" +
                                             "<td>" + data.level + "</td>" +
                                             "<td>" + data.price + "</td>" +
+                                            "<td>" + data.totalSessions + "</td>" +
                                             "<td>" +
                                             "<a href='editCourse.jsp?courseID=" + data.courseID + "' class='edit-btn'>Chỉnh Sửa</a>" +
                                             "<a href='deleteCourseServlet?courseID=" + data.courseID + "' class='delete-btn' onclick='return confirm(\"Bạn có chắc muốn xóa?\");'>Xóa</a>" +

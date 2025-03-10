@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Course;
 import model.Courses;
+import model.Student;
 
 public class CourseDAO extends DBContext {
 
@@ -75,33 +76,95 @@ public class CourseDAO extends DBContext {
         }
     }
     public List<Courses> getAllCourses() {
-        List<Courses> coursesList = new ArrayList<>();
-        String sql = "SELECT * FROM Courses";
-        try (PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                coursesList.add(new Courses(
-                        rs.getInt("CourseID"),
-                        rs.getString("CourseName"),
-                        rs.getString("Description"),
-                        rs.getString("Level"),
-                        rs.getDouble("Price"),
-                        rs.getFloat("Rating"),
-                        rs.getString("Category")
-                ));
+    List<Courses> coursesList = new ArrayList<>();
+    String sql = "SELECT CourseID, CourseName, Description, Level, Price, Rating, TotalSessions, CourseStatus FROM Courses"; // ✅ Truy vấn đầy đủ cột
+
+    try (PreparedStatement stmt = connection.prepareStatement(sql);
+         ResultSet rs = stmt.executeQuery()) {
+
+        while (rs.next()) {
+            coursesList.add(new Courses(
+                rs.getInt("CourseID"),
+                rs.getString("CourseName"),
+                rs.getString("Description"),
+                rs.getString("Level"),
+                rs.getDouble("Price"),
+                rs.getFloat("Rating"),
+                rs.getInt("TotalSessions"),  // ✅ Thêm số buổi học
+                rs.getString("CourseStatus") // ✅ Thêm trạng thái khóa học
+            ));
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return coursesList;
+}
+
+    public boolean markAttendance(int tutorId, int courseId, int sessionNumber, String status) {
+        boolean isSuccessful = false;
+        String sql = "UPDATE Attendance SET Status = ?, SessionDate = GETDATE() "
+                   + "WHERE CourseID = ? AND SessionNumber = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, status);  // Trạng thái điểm danh (Present/Absent)
+            stmt.setInt(2, courseId);
+            stmt.setInt(3, sessionNumber);
+
+            int rowsAffected = stmt.executeUpdate(); // Cập nhật trạng thái điểm danh
+            if (rowsAffected > 0) {
+                isSuccessful = true;
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return coursesList;
+        return isSuccessful;
     }
-    public static void main(String[] args) {
-        CourseDAO courseDAO = new CourseDAO();
-        List<Course> courses = courseDAO.getCoursesByUserId(4); // Thử với UserID = 4
+    
+    public boolean updateCompletedSessions(int studentId, int courseId) {
+        boolean isUpdated = false;
+        String sql = "UPDATE StudentCourses SET completedSessions = completedSessions + 1 "
+                   + "WHERE StudentID = ? AND CourseID = ?";
 
-        System.out.println("Danh sách khóa học:");
-        for (Course course : courses) {
-            System.out.println(course);
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, studentId);  // ID học viên
+            stmt.setInt(2, courseId);   // ID khóa học
+
+            int rowsAffected = stmt.executeUpdate();  // Cập nhật số buổi học đã hoàn thành
+            if (rowsAffected > 0) {
+                isUpdated = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return isUpdated;
     }
+    
+    
+    public boolean checkCourseCompletion(int courseId, int sessionCount) {
+        boolean isCompleted = false;
+        String sql = "SELECT completedSessions FROM StudentCourses WHERE CourseID = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, courseId);
+            try (ResultSet rs = stmt.executeQuery()) {  // Dùng try-with-resources cho ResultSet
+                if (rs.next() && rs.getInt("completedSessions") >= sessionCount) {
+                    isCompleted = true;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return isCompleted;
+    }
+
+//    public static void main(String[] args) {
+//        CourseDAO courseDAO = new CourseDAO();
+//        List<Course> courses = courseDAO.getCoursesByUserId(4); // Thử với UserID = 4
+//
+//        System.out.println("Danh sách khóa học:");
+//        for (Course course : courses) {
+//            System.out.println(course);
+//        }
+//    }
 
 }
