@@ -69,6 +69,9 @@
 
                                         <!-- Nút xóa -->
                                         <a href="javascript:void(0);" class="delete-btn" onclick="deleteCourse('${course.courseID}', this);">🗑️ Xóa</a>
+                                        
+                                        <!-- Nút điểm danh -->
+                                        <a href="SlotController?courseId=${course.courseID}" class="btn btn-info"> Điểm danh</a>
                                     </div>
                                 </td>
                             </tr>
