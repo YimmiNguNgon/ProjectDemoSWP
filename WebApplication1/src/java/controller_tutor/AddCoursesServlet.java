@@ -80,16 +80,17 @@ public class AddCoursesServlet extends HttpServlet {
             return;
         }
         // Lấy dữ liệu từ request
+        // Lấy dữ liệu từ request
         String courseName = request.getParameter("courseName");
         String description = request.getParameter("description");
-        String cat = request.getParameter("category");
         String level = request.getParameter("level");
         double price = Double.parseDouble(request.getParameter("price"));
+        int totalSessions = Integer.parseInt(request.getParameter("totalSessions")); // Số buổi học
+        
         // Gọi DAO để thêm khóa học
         TutorDAO tutorDAO = new TutorDAO();
-        System.out.println(tutorID + " " + courseName + " " + description  + " " + level + " " + price);
-        int courseID = tutorDAO.addCourseForTutor(tutorID, courseName, description, level, price, cat);
-        // Trả về JSON cho AJAX
+        System.out.println(tutorID + " " + courseName + " " + description  + " " + level + " " + price + " " + totalSessions);
+        int courseID = tutorDAO.addCourseForTutor(tutorID, courseName, description, level, price, totalSessions);        // Trả về JSON cho AJAX
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         JSONObject jsonResponse = new JSONObject();
@@ -100,6 +101,8 @@ public class AddCoursesServlet extends HttpServlet {
             jsonResponse.put("description", description);
             jsonResponse.put("level", level);
             jsonResponse.put("price", price);
+            jsonResponse.put("totalSessions", totalSessions);
+           
         } else {
             jsonResponse.put("success", false);
         }

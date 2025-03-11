@@ -89,18 +89,19 @@ public class EditCourseServlet extends HttpServlet {
         }
 
         // Lấy dữ liệu từ request
-        String courseName = request.getParameter("courseName");
-        String description = request.getParameter("description");
-        String cat = request.getParameter("category");
-        String level = request.getParameter("level");
-        double price = Double.parseDouble(request.getParameter("price"));
-        int courseID = Integer.parseInt(request.getParameter("courseID")); // Lấy courseID từ request
+        int courseID = Integer.parseInt(request.getParameter("courseID"));
+            String courseName = request.getParameter("courseName");
+            String description = request.getParameter("description");
+            String level = request.getParameter("level");
+            double price = Double.parseDouble(request.getParameter("price"));
+            int totalSessions = Integer.parseInt(request.getParameter("totalSessions")); // ✅ Thêm số buổi học
+            String courseStatus = request.getParameter("courseStatus");
 
         // Gọi DAO để cập nhật khóa học
         TutorDAO tutorDAO = new TutorDAO();
-        System.out.println(tutorID + " " + courseID + " " + courseName + " " + description + " " + level + " " + price);
+        System.out.println(tutorID + " " + courseID + " " + courseName + " " + description + " " + level + " " + price + " " + totalSessions);
 
-        boolean success = tutorDAO.editCourseForTutor(courseID, courseName, description, level, price, cat);
+        boolean success = tutorDAO.editCourseForTutor(courseID, courseName, description, level, price, totalSessions, courseStatus);
 
         // Trả về JSON cho AJAX
         response.setContentType("application/json");
@@ -114,7 +115,7 @@ public class EditCourseServlet extends HttpServlet {
             jsonResponse.put("description", description);
             jsonResponse.put("level", level);
             jsonResponse.put("price", price);
-
+            jsonResponse.put("totalSessions", totalSessions);
         } else {
             jsonResponse.put("success", false);
         }
