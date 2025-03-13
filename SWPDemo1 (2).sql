@@ -3,7 +3,7 @@ GO
 
 CREATE DATABASE SWPDemo1
 -- Tạo cơ sở dữ liệu
-
+ALTER TABLE [Tên bảng tham chiếu] DROP CONSTRAINT [Tên ràng buộc khóa ngoại];
 -- Bảng: Users
 CREATE TABLE Users (
     UserID INT PRIMARY KEY IDENTITY(1,1), -- Khóa chính, tự động tăng giá trị
@@ -15,46 +15,40 @@ CREATE TABLE Users (
 	Gender NVARCHAR(10) CHECK (Gender IN ('Nam', 'Nữ')), -- Giới tính với giá trị cố định
     Address NVARCHAR(255),
 	image_url NVARCHAR(255)
-
+	FOREIGN KEY (role_id) REFERENCES Role(role_id) 
 );
+DELETE FROM Users;
 
-UPDATE Users
-SET image_url = 'https://cdn.alongwalk.info/info/wp-content/uploads/2022/08/11051746/image-10-tiem-chup-anh-the-lay-ngay-dep-nhat-tp-vinh-nghe-an-166014466587924.jpg'  -- Đặt đường dẫn ảnh cho người dùng
-WHERE UserID = 3;
+-- Thêm dữ liệu vào bảng Users
+-- Thêm dữ liệu hợp lệ vào bảng Users
+-- Thêm dữ liệu hợp lệ vào bảng Users
+INSERT INTO Users (role_id, Name, Email, Password, Phone, Gender, Address, image_url)
+VALUES 
+(3, N'Nguyễn Hoàng D', N'nguyenhoangd@example.com', N'password42', N'0123456789', N'Nam', N'Hà Nội, Việt Nam', N'image_url1.jpg'),
+(3, N'Nguyễn Tuyết N', N'nguyentuyetn@example.com', N'password43', N'0987654321', N'Nữ', N'Hồ Chí Minh, Việt Nam', N'image_url2.jpg'),
+(3, N'Lê Vũ C', N'levuc@example.com', N'password44', N'0912345678', N'Nữ', N'Đà Nẵng, Việt Nam', N'image_url3.jpg'),
+(4, N'Phạm Thị D', N'phamthid@example.com', N'password4', N'0922334455', N'Nữ', N'Cần Thơ, Việt Nam', N'image_url4.jpg'),
+(2, N'Nguyễn Thị E', N'nguyenthe@example.com', N'password5', N'0933445566', N'Nữ', N'Quảng Ninh, Việt Nam', N'image_url5.jpg'),
+(4, N'Vũ Quang F', N'vuquangf@example.com', N'password6', N'0911223344', N'Nam', N'Bình Duong, Việt Nam', N'image_url6.jpg'),
+(3, N'Đặng Hoàng G', N'danghoangg@example.com', N'password7', N'0955778899', N'Nam', N'Lâm Đồng, Việt Nam', N'image_url7.jpg'),
+(4, N'Hoàng Thu H', N'hoangthuh@example.com', N'password8', N'0988445566', N'Nữ', N'Ninh Bình, Việt Nam', N'image_url8.jpg');
+ALTER TABLE Users
+ADD CONSTRAINT CK__Users__Gender__38996AB5 CHECK (Gender IN (N'Nam', N'Nữ'));
+
 CREATE TABLE Role (
-    role_id INT PRIMARY KEY IDENTITY(1,1),
-    role_name NVARCHAR(20) NOT NULL UNIQUE
-);
-
-SET IDENTITY_INSERT [dbo].[Role] ON 
-
-INSERT INTO [dbo].[Role] ([role_id], [role_name]) 
-VALUES 
-(1, N'Admin'),
-(2, N'Staff'),
-(3, N'Tutor'),
-(4, N'Student');
-SET IDENTITY_INSERT [dbo].[Role] OFF;
+     role_id INT PRIMARY KEY IDENTITY(1,1),
+     role_name NVARCHAR(20) NOT NULL UNIQUE
+ );
+ SET IDENTITY_INSERT [dbo].[Role] ON 
+ INSERT INTO [dbo].[Role] ([role_id], [role_name]) 
+ VALUES 
+ (1, N'Admin'),
+ (2, N'Staff'),
+ (3, N'Tutor'),
+ (4, N'Student');
+ SET IDENTITY_INSERT [dbo].[Role] OFF;
 
 
-VALUES 
-(1, N'Ha Duc Huy',  'admin@gmail.com',  '123456',  '0336143011'), -- Admin
-(2, N'Trần Thị B',  'staff@gmail.com',  '1234566',  '0978123456'), -- Staff
-(3, N'Lê Văn C',  'tutor@gmail.com',  '123456',  '0962345678'), -- Tutor
-(4, N'Phạm Thị D',  'student@gmail.com',  '123456',  '0953456789'); -- Student
-
-INSERT INTO Users (role_id, Name, Email, Password, Phone)
-VALUES 
-(3, N'Lê Văn F', 'tutor1@gmail.com', '123456', '0962345678'), -- Gia sư 1
-(3, N'Phạm Thị D', 'tutor2@gmail.com', '123456', '0953456789'); -- Gia sư 2
-
-INSERT INTO Users (role_id, Name, Email, Password, Phone)
-VALUES
-(4, N' Hà Đức N', 'student2@gmail.com', '123456', '0336143030'),
-(4, N' Nguyễn Minh Đ', 'student3@gmail.com', '123456', '0336141111'),
-(4, N' Nguyễn Vũ Tường V', 'student4@gmail.com', '123456', '0336142222');
-ALTER TABLE Courses 
-ADD CourseStatus NVARCHAR(20) DEFAULT 'Ongoing' CHECK (CourseStatus IN ('Ongoing', 'Stopped', 'Completed'));
 CREATE TABLE Courses (
     CourseID INT PRIMARY KEY IDENTITY(1,1), -- Khóa chính, tự động tăng giá trị
     CourseName NVARCHAR(100) NOT NULL, -- Tên khóa học
@@ -63,7 +57,7 @@ CREATE TABLE Courses (
     Price DECIMAL(10, 2) NOT NULL, -- Giá của khóa học
     Rating FLOAT, -- Đánh giá trung bình của khóa học
     TotalSessions int,
-	CourseStatus NVARCHAR(20) DEFAULT 'Ongoing' CHECK (CourseStatus IN ('Ongoing', 'Stopped', 'Completed'))
+	CourseStatus NVARCHAR(20) DEFAULT 'Ongoing' CHECK (CourseStatus IN ('On going', 'Stopped', 'Completed'))
 );
 
 
@@ -77,7 +71,13 @@ CREATE TABLE Tutors (
     Verified BIT DEFAULT 0, -- Trạng thái xác minh gia sư (0: chưa xác minh, 1: đã xác minh)
     FOREIGN KEY (UserID) REFERENCES Users(UserID) -- Ràng buộc khóa ngoại liên kết với Users
 );
+INSERT INTO Tutors (UserID, Education, Experience, HourlyRate, Verified)
+VALUES 
 
+(42, N'Giáo viên Tiếng Anh, Cử nhân Đại học Sư phạm', N'5 năm giảng dạy Tiếng Anh', 250000, 1),  -- Gia sư dạy IELTS
+(43, N'Giáo viên Tiếng Anh, Cử nhân Đại học Sư phạm', N'6 năm giảng dạy Tiếng Anh', 250000, 0),
+(44, N'Giáo viên Tiếng Anh, Cử nhân Đại học Sư phạm', N'7 năm giảng dạy Tiếng Anh', 250000, 1);  -- Gia sư dạy IELTS
+ -- Gia sư dạy TOEIC
 CREATE TABLE TutorCourses (
     TutorCourseID INT PRIMARY KEY IDENTITY(1,1), -- ID tự tăng
     TutorID INT NOT NULL, -- Khóa ngoại tham chiếu đến Tutors
@@ -86,15 +86,13 @@ CREATE TABLE TutorCourses (
     FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
 );
 
-DELETE FROM TutorCourses;
-
 INSERT INTO TutorCourses (TutorID, CourseID)
 VALUES 
-INSERT INTO TutorCourses (TutorID, CourseID)
-VALUES 
-(1, 1), -- Lê Văn C dạy English for Beginners
-(1, 4), -- Lê Văn C dạy English Intermediate
-(1, 7); -- Lê Văn C dạy English Advanced
+(3, 3),  -- Giáo viên Tiếng Anh dạy Khóa học IELTS Cơ bản
+(4, 4),  -- Giáo viên Tiếng Anh dạy Khóa học TOEIC Cơ bản
+(5, 5),  -- Giáo viên Tiếng Anh dạy Khóa học IELTS cho người mới
+(6, 6),  -- Giáo viên Tiếng Anh dạy Khóa học TOEIC cho người mới
+(7, 7);  -- Giáo viên Tiếng Anh dạy Khóa học IELTS Listening & Speaking
 
 -- Bảng: Students
 CREATE TABLE Students (
@@ -105,52 +103,47 @@ CREATE TABLE Students (
     FOREIGN KEY (UserID) REFERENCES Users(UserID), -- Ràng buộc khóa ngoại liên kết với Users
     FOREIGN KEY (CourseID) REFERENCES Courses(CourseID) -- Ràng buộc khóa ngoại liên kết với Courses
 );
-
-ALTER TABLE Students ADD completedSessions INT DEFAULT 0;
-drop 
-
+-- Thêm dữ liệu vào bảng Students
 INSERT INTO Students (UserID, CourseID)
 VALUES 
-(4, 1),  -- Học sinh với UserID = 4 tham gia khóa học 1
-(8, 2),
-(9, 3),
-(10,1);  -- Học sinh với UserID = 5 tham gia khóa học 2
-SET IDENTITY_INSERT Students ON;  
+(37, 3),  -- Học sinh với UserID = 1 tham gia khóa học IELTS Cơ bản
+(39, 4),  -- Học sinh với UserID = 2 tham gia khóa học TOEIC Cơ bản
+(41, 5);  -- Học sinh với UserID = 3 tham gia khóa học IELTS cho người mới
 
-INSERT INTO Students (StudentID, UserID, CourseID, DateJoined)
-VALUES (1, 4, 1, GETDATE());  
 
-SET IDENTITY_INSERT Students OFF;
---quản lý khóa học của học sinh
 
 CREATE TABLE StudentCourses (
     StudentID INT NOT NULL,
     CourseID INT NOT NULL,
     completedSessions INT DEFAULT 0, 
-    Status NVARCHAR(20) DEFAULT 'Đang diễn ra' 
-        CHECK (Status IN ('Đang diễn ra', 'Hoàn thành')),
+    Status NVARCHAR(20) DEFAULT N'Đang diễn ra' 
+        CHECK (Status IN (N'Đang diễn ra', N'Hoàn thành')),
     PRIMARY KEY (StudentID, CourseID),
     FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
     FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
 );
+
+ALTER TABLE StudentCourses
+DROP CONSTRAINT CK__StudentCo__Statu__03BB8E22;
+
+ALTER TABLE StudentCourses
+ADD CONSTRAINT CK__StudentCourses__Status CHECK (Status IN (N'Đang diễn ra', N'Hoàn thành'));
+-- Thêm dữ liệu vào bảng StudentCourses
+INSERT INTO StudentCourses (StudentID, CourseID, completedSessions, Status)
+VALUES 
+(10, 3, 5, N'Đang diễn ra'),  -- Học sinh với StudentID = 1 tham gia khóa học IELTS Cơ bản, đã hoàn thành 5 buổi
+(11, 4, 3, N'Hoàn thành'),  -- Học sinh với StudentID = 2 tham gia khóa học TOEIC Cơ bản, đã hoàn thành 3 buổi
+(12, 5, 7, N'Đang diễn ra')  -- Học sinh với StudentID = 3 tham gia khóa học IELTS cho người mới, đã hoàn thành 7 buổi
+
+-- Kiểm tra các constraint của bảng StudentCourses
+EXEC sp_helpconstraint 'StudentCourses';
+DELETE FROM StudentCourses;
+
+
 UPDATE StudentCourses 
 SET completedSessions = completedSessions + 1;
 
 -- Trigger tự động cập nhật trạng thái khi hoàn thành khóa học
-CREATE TRIGGER trg_UpdateCourseStatus
-ON StudentCourses
-AFTER UPDATE
-AS
-BEGIN
-    SET NOCOUNT ON;
-    
-    UPDATE sc
-    SET Status = 'Hoàn thành'
-    FROM StudentCourses sc
-    JOIN inserted i ON sc.StudentID = i.StudentID AND sc.CourseID = i.CourseID
-    JOIN Courses c ON sc.CourseID = c.CourseID
-    WHERE i.completedSessions >= c.TotalSessions;
-END;
 
 -- Bảng lưu từng buổi học của học sinh
 CREATE TABLE CourseSessions (
@@ -200,12 +193,7 @@ CREATE TABLE Schedules (
     FOREIGN KEY (StudentID) REFERENCES Students(StudentID) -- Ràng buộc khóa ngoại liên kết với Students
 );
 
-INSERT INTO Schedules (TutorID, StudentID, DayOfWeek, StartTime, EndTime)
-VALUES
-(1, 2, 'Monday', '08:00:00', '10:00:00'),  
-(2, 3, 'Tuesday', '09:00:00', '11:00:00'),
-(3, 4, 'Wednesday', '10:00:00', '12:00:00'),
-(1, 5, 'Friday', '14:00:00', '16:00:00');  -- Gia sư 1 dạy học sinh 2 vào Thứ Sáu từ 14:00 đến 16:00
+
 
 
 CREATE TABLE CourseRequests (
@@ -255,18 +243,7 @@ CREATE TABLE Bookings (
     CONSTRAINT UC_Booking UNIQUE (StudentID, TutorID, Date, StartTime) -- Đảm bảo không có lịch học trùng lặp
 );
 
--- Tạo bảng lưu đánh giá của học sinh sau mỗi buổi học
-CREATE TABLE SessionReviews (
-    ReviewID INT PRIMARY KEY IDENTITY(1,1),
-    StudentID INT NOT NULL,
-    SessionID INT NOT NULL,
-    Rating INT CHECK (Rating BETWEEN 1 AND 5), -- Đánh giá từ 1 đến 5 sao
-    Comment NVARCHAR(MAX), -- Nhận xét của học sinh
-    ReviewStatus NVARCHAR(10) CHECK (ReviewStatus IN ('25%', '50%', '75%', '100%')), -- Trạng thái review
-    ReviewDate DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
-    FOREIGN KEY (SessionID) REFERENCES CourseSessions(SessionID)
-);
+
 
 -- Bảng: Payments
 CREATE TABLE Payments (
