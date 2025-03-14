@@ -168,6 +168,7 @@ a:hover {
         </style>
 </head>
 <body>
+     <%@ include file="header.jsp" %>
     <header>
             <div class="container_header">
                 <nav>
@@ -175,7 +176,6 @@ a:hover {
                         <li><a href="hometutor.jsp">Trang Chủ</a></li>
                         <li><a href="ProfileTuTorServlet">Thông Tin Cá Nhân</a></li>
                         <li><a href="tutorcoursesservlet">Khóa Học</a></li>
-                        <li><a href="ManageReservation">Đặt lịch</a></li>
                         <li><a href="scheduleservlet">Lịch Dạy</a></li>
                     </ul>
                 </nav>
@@ -190,7 +190,7 @@ a:hover {
                     <th>Giờ</th>
                     <th>Môn Dạy</th>
                     <th>Học Sinh</th>
-                    <th>Chỉnh Sửa</th>
+                    
                 </tr>
                 <!-- Hiển thị lịch dạy từ session -->
                 <c:if test="${not empty sessionScope.schedules}">
@@ -200,7 +200,7 @@ a:hover {
                         <td>${schedule.startTime} - ${schedule.endTime}</td>
                         <td>${schedule.courseName}</td> <!-- Hiển thị môn học -->
                         <td>${schedule.hocSinh}</td> <!-- Hiển thị tên học sinh -->
-                        <td><a href="editSchedule.jsp?scheduleID=${schedule.scheduleID}">Chỉnh Sửa</a></td>
+                        
                     </tr>
                 </c:forEach>
             </c:if>

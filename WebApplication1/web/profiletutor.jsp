@@ -178,10 +178,9 @@ strong {
                         <li><a href="hometutor.jsp">Trang Chủ</a></li>
                         <li><a href="ProfileTuTorServlet">Thông Tin Cá Nhân</a></li>
                         <li><a href="tutorcoursesservlet">Khóa Học</a></li>
-                        <li><a href="ManageReservation">Đặt lịch</a></li>
                         <li><a href="scheduleservlet">Lịch Dạy</a></li>
                     </ul>
-                </nav>
+            </nav>
         </div>
     </header>
 

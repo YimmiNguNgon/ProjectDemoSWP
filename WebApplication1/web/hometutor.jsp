@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -88,10 +89,7 @@
                         <li><a href="hometutor.jsp">Trang Chủ</a></li>
                         <li><a href="ProfileTuTorServlet">Thông Tin Cá Nhân</a></li>
                         <li><a href="tutorcoursesservlet">Khóa Học</a></li>
-                        <li><a href="ManageReservation">Đặt lịch</a></li>
                         <li><a href="scheduleservlet">Lịch Dạy</a></li>
-                        <li><a href="attendance.jsp">Điểm Danh</a></li>
-
                     </ul>
                 </nav>
             </div>
@@ -103,13 +101,7 @@
                 
             </div>
         </section>
-        <section class="hero">
-            <div class="container">
-                <h2>Các khóa học hiện tại</h2>
-                
-            </div>
-        </section>
-
+       
         <%@ include file="footer.jsp" %>
     </body>
 </html>
