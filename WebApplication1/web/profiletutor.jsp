@@ -43,26 +43,150 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+
+
+        header nav ul {
+            background: #0073e6;
+            padding: 15px 0;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+
+        header nav ul li {
+            margin: 0 15px;
+        }
+
+        header nav ul li a {
+            color: #F2F5E4;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        header nav ul li a:hover {
+            color: #F2F5E4;
+        }
+        
+        .container-profile {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+h2 {
+    color: #007DA3;
+    margin-bottom: 20px;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.profile-info img {
+    border-radius: 0%;
+    width: 225px;
+    height: 260px;
+    object-fit: cover;
+    border: 4px solid #007DA3;
+}
+
+.details {
+    text-align: left;
+    width: 100%;
+    max-width: 500px;
+}
+
+.details h3 {
+    color: #007DA3;
+    margin-bottom: 10px;
+}
+
+.details p {
+    margin: 5px 0;
+    font-size: 16px;
+}
+
+strong {
+    color: #333;
+}
+
+.edit-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background: #007DA3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.edit-btn:hover {
+    background: #005f7a;
+}
+@media (min-width: 768px) {
+    .profile-info {
+        flex-direction: row;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .profile-info img {
+        margin-right: 20px;
+    }
+}
     </style>
 </head>
 <body>
     <%@ include file="header.jsp" %>
     <header>
-        <div class="container">
+        <div class="container_header">
             <nav>
-                <ul>
-                    <li><a href="hometutor.jsp">Trang Chủ</a></li>
-                    <li><a href="ProfileTuTorServlet">Thông Tin Cá Nhân</a></li>
-                    <li><a href="tutorcoursesservlet">Khóa Học</a></li>
-                    <li><a href="scheduleservlet">Lịch Dạy</a></li>
-                    <li><a href="contact.jsp">Liên Hệ</a></li>
-                </ul>
-            </nav>
+                    <ul>
+                        <li><a href="hometutor.jsp">Trang Chủ</a></li>
+                        <li><a href="ProfileTuTorServlet">Thông Tin Cá Nhân</a></li>
+                        <li><a href="tutorcoursesservlet">Khóa Học</a></li>
+                        <li><a href="ManageReservation">Đặt lịch</a></li>
+                        <li><a href="scheduleservlet">Lịch Dạy</a></li>
+                    </ul>
+                </nav>
         </div>
     </header>
 
     <section class="profile">
-        <div class="container">
+        <div class="container-profile">
             <h2>Thông Tin Gia Sư</h2>
             <div class="profile-info">
                 <img style="border-radius: 0%; width: 225px;height: 260px; 
