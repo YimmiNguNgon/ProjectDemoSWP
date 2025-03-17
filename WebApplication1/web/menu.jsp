@@ -12,51 +12,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EduOnline - Học nhanh hơn với gia sư</title>
     <link rel="stylesheet" href="css/menu.css">
+    <style>
+        /* Carousel Section */
+.carousel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    gap: 1rem; /* Khoảng cách giữa nút điều hướng và ảnh */
+    width: 100%; /* Đảm bảo carousel chiếm hết chiều rộng */
+    max-width: 1200px; /* Tạo chiều rộng tối đa cho carousel */
+    margin: 0 auto; /* Căn giữa carousel */
+}
 
+.carousel-content {
+    position: relative;
+    width: 100%;
+    height: 400px; /* Đặt chiều cao mặc định cho carousel */
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.tutor-image {
+    width: 100%;
+    height: 95%;
+    object-fit: cover; /* Đảm bảo ảnh không bị méo và luôn đầy khung */
+    border-radius: 0px; /* Bo góc ảnh để tạo sự mềm mại */
+    transition: transform 0.3s ease-in-out; /* Thêm hiệu ứng chuyển động mượt mà */
+}
+
+/* Nút điều hướng (prev/next) */
+.carousel-button {
+    background: rgba(0, 0, 0, 0.2); /* Nền trong suốt (đặt độ mờ ở mức thấp) */
+    color: white;
+    font-size: 2rem;
+    border: none;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: background 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.carousel-button:hover {
+    
+    transform: scale(1); /* Phóng to nút khi hover */
+}
+
+/* Vị trí các nút điều hướng */
+.carousel-button.prev {
+    left: 10px; /* Nút quay lại nằm bên trái */
+}
+
+.carousel-button.next {
+    right: 10px; /* Nút tiếp theo nằm bên phải */
+}
+
+    </style>
 </head>
 <body>
-    <%@ include file="header.jsp" %>
+    <%@ include file="headerStudent.jsp" %>
+    
     <div class="container">
         <!-- Hero Section -->
-        <section class="hero">
-            <h2 class="hero-title">Học nhanh hơn với gia sư ngôn ngữ giỏi nhất của bạn.</h2>
-            <img src="https://static.preply.com/static/ssr/_next/static/media/hero-23.aaf52759.jpg" alt="Hero">
-            <a href="login.jsp" class="start-button">Bắt đầu →</a>
+        <section class="carousel">
+            <button class="carousel-button prev" onclick="prevTutor()">&lt;</button>
+            <div class="carousel-content">
+                <img id="tutor-image" src="https://wonderenglishcenter.edu.vn/upload/files/chung/slide-2.png" alt="Gia sư" class="tutor-image">
+            </div>
+            <button class="carousel-button next" onclick="nextTutor()">&gt;</button>
         </section>
+
 
         <!-- Stats Section -->
         <section class="stats">
             <div>
-                <h3 class="stat-number">50.000 +</h3>
+                <h3 class="stat-number">Được học với</h3>
                 <p>Gia sư giàu kinh nghiệm</p>
             </div>
             <div>
-                <h3 class="stat-number">300.000+</h3>
-                <p>Đánh giá gia sư 5 sao</p>
-            </div>
-            <div>
-                <h3 class="stat-number">120+</h3>
-                <p>Các môn học được giảng dạy</p>
-            </div>
-            <div>
-                <h3 class="stat-number">180+</h3>
-                <p>Quốc tịch của gia sư</p>
+                <h3 class="stat-number">Các gia sư</h3>
+                <p>Đến từ Bắc vào Nam</p>
             </div>
         </section>
 
         <!-- Tutor Carousel Section -->
-        <section class="tutor-carousel">
-            <button class="carousel-button" onclick="prevTutor()">&lt;</button>
-            <div class="tutor-info">
-                <img id="tutor-image" src="https://preply.com/cdn-cgi/image/format=auto,fit=contain,width=700/https://static.preply.com/static/ssr/_next/static/media/Ash.a4ab1e48.jpg" alt="Gia sư" class="tutor-image">
-                <div class="tutor-details">
-                    <h3 id="tutor-quote">Lựa chọn tốt nhất tôi đã đưa ra để phát triển bản thân trong một thời gian dài.</h3>
-                    <p><strong id="tutor-name">Tro</strong></p>
-                    <span id="tutor-subject">Gia sư tiếng Anh</span>
-                </div>
-            </div>
-            <button class="carousel-button" onclick="nextTutor()">&gt;</button>
-        </section>
+        
 
         <!-- Guarantee Section -->
         <section class="guarantee">
@@ -65,43 +112,20 @@
         </section>
 
         <!-- Become Tutor Section -->
-        <section class="become-tutor">
-            <div class="tutor-content">
-                <h2 class="tutor-title">Trở thành gia sư</h2>
-                <p class="tutor-description">Kiếm tiền bằng cách chia sẻ kiến thức chuyên môn của bạn với học sinh.</p>
-                <p class="tutor-description">Đăng ký để bắt đầu dạy kèm trực tuyến với EduOnline.</p>
-                <ul class="tutor-benefits">
-                    <li>✅ Tìm học sinh mới</li>
-                    <li>✅ Phát triển doanh nghiệp của bạn</li>
-                    <li>✅ Nhận thanh toán an toàn</li>
-                </ul>
-                <a href="register-tutor.jsp" class="tutor-button">Trở thành gia sư →</a>
-                <a href="#" class="tutor-link">Nền tảng của chúng tôi hoạt động như thế nào</a>
-            </div>
-            <img src="https://static.preply.com/static/ssr/_next/static/media/tutor-23.2c14e711.jpg" alt="Trở thành gia sư" class="tutor-image">
-        </section> 
+        
     </div>
 
     <script>
         // JavaScript để điều khiển slider gia sư
         let tutors = [
             {
-                name: "Tro",
-                subject: "Gia sư tiếng Anh",
-                image: "https://preply.com/cdn-cgi/image/format=auto,fit=contain,width=700/https://static.preply.com/static/ssr/_next/static/media/Ash.a4ab1e48.jpg",
-                quote: "Lựa chọn tốt nhất tôi đã đưa ra để phát triển bản thân trong một thời gian dài."
+                image: "https://img.pikbest.com/origin/10/00/82/82apIkbEsTuJM.png!w700wp"
             },
             {
-                name: "Hoa Ly",
-                subject: "Gia sư tiếng Anh",
-                image: "https://preply.com/cdn-cgi/image/format=auto,fit=contain,width=700/https://static.preply.com/static/ssr/_next/static/media/Bree.1614943e.jpg",
-                quote: "Chỉ cần vài bài học, bạn đã có thể thấy sự khác biệt."
+                image: "https://anhmy.edu.vn/wp-content/uploads/2023/12/Banner-Facebook-Ngang-Dang-ky-thi-IELST-1.jpg"
             },
             {
-                name: "Brina",
-                subject: "Gia sư tiếng Anh",
-                image: "https://preply.com/cdn-cgi/image/format=auto,fit=contain,width=700/https://static.preply.com/static/ssr/_next/static/media/Liv.bdf5bc50.jpg",
-                quote: "Chỉ cần vài bài học, bạn đã có thể thấy sự khác biệt."
+                image: "https://wonderenglishcenter.edu.vn/upload/files/chung/slide-2.png"
             }
         ];
         
