@@ -32,6 +32,13 @@ VALUES
 (4, N'Vũ Quang F', N'vuquangf@example.com', N'password6', N'0911223344', N'Nam', N'Bình Duong, Việt Nam', N'image_url6.jpg'),
 (3, N'Đặng Hoàng G', N'danghoangg@example.com', N'password7', N'0955778899', N'Nam', N'Lâm Đồng, Việt Nam', N'image_url7.jpg'),
 (4, N'Hoàng Thu H', N'hoangthuh@example.com', N'password8', N'0988445566', N'Nữ', N'Ninh Bình, Việt Nam', N'image_url8.jpg');
+
+INSERT INTO Users (role_id, Name, Email, Password, Phone, Gender, Address, image_url)
+VALUES
+(3, N'Nguyễn Hoàng N', N'nguyenhoangn@example.com', N'password1', N'0123456789', N'Nam', N'Hà Nội, Việt Nam', N'https://giasuinfo.com/gia-su/images/thai-trong-the-3093.jpg'),
+(3, N'Phạm Hồng V', N'phamhongv@example.com', N'password1', N'0987654321', N'Nữ', N'Hà Nội, Việt Nam', N'https://faceinch.vn/upload/news/chup-anh-the-tha-toc-3007.jpg'),
+(3, N'Phạm Thị Hương T', N'phamthihuongt@example.com', N'password1', N'0912345678', N'Nữ', N'Đà Nẵng, Việt Nam', N'https://guustudio.vn/wp-content/uploads/2024/08/Chup-anh-hinh-the-dep-bmt-Guu-anh-the044-scaled.jpg'),
+(4, N'Vũ Minh N', N'vuminhn@example.com', N'password1', N'0922334455', N'Nam', N'Tuyên Quang, Việt Nam', N'https://www.trungtamdaykem.com/imagedb/hinhthe/hinhthe202402280820062316.jpg');
 ALTER TABLE Users
 ADD CONSTRAINT CK__Users__Gender__38996AB5 CHECK (Gender IN (N'Nam', N'Nữ'));
 
@@ -74,9 +81,9 @@ CREATE TABLE Tutors (
 INSERT INTO Tutors (UserID, Education, Experience, HourlyRate, Verified)
 VALUES 
 
-(42, N'Giáo viên Tiếng Anh, Cử nhân Đại học Sư phạm', N'5 năm giảng dạy Tiếng Anh', 250000, 1),  -- Gia sư dạy IELTS
-(43, N'Giáo viên Tiếng Anh, Cử nhân Đại học Sư phạm', N'6 năm giảng dạy Tiếng Anh', 250000, 0),
-(44, N'Giáo viên Tiếng Anh, Cử nhân Đại học Sư phạm', N'7 năm giảng dạy Tiếng Anh', 250000, 1);  -- Gia sư dạy IELTS
+(45, N'Giáo viên Tiếng Anh, Cử nhân Đại học Ngoại Ngữ', N'5 năm giảng dạy Tiếng Anh', 250000, 0),  -- Gia sư dạy IELTS
+(46, N'Giáo viên Tiếng Anh, Cử nhân Đại học Ngoại Ngữ', N'6 năm giảng dạy Tiếng Anh', 250000, 0),
+(47, N'Giáo viên Tiếng Anh, CCử nhân Đại học Ngoại Ngữ', N'7 năm giảng dạy Tiếng Anh', 250000, 0);  -- Gia sư dạy IELTS
  -- Gia sư dạy TOEIC
 CREATE TABLE TutorCourses (
     TutorCourseID INT PRIMARY KEY IDENTITY(1,1), -- ID tự tăng
@@ -88,9 +95,9 @@ CREATE TABLE TutorCourses (
 
 INSERT INTO TutorCourses (TutorID, CourseID)
 VALUES 
-(3, 3),  -- Giáo viên Tiếng Anh dạy Khóa học IELTS Cơ bản
-(4, 4),  -- Giáo viên Tiếng Anh dạy Khóa học TOEIC Cơ bản
-(5, 5),  -- Giáo viên Tiếng Anh dạy Khóa học IELTS cho người mới
+(8, 8),  -- Giáo viên Tiếng Anh dạy Khóa học IELTS Cơ bản
+(9, 9),  -- Giáo viên Tiếng Anh dạy Khóa học TOEIC Cơ bản
+(10, 10)  -- Giáo viên Tiếng Anh dạy Khóa học IELTS cho người mới
 (6, 6),  -- Giáo viên Tiếng Anh dạy Khóa học TOEIC cho người mới
 (7, 7);  -- Giáo viên Tiếng Anh dạy Khóa học IELTS Listening & Speaking
 
