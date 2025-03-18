@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -95,7 +95,7 @@
         </style>
     </head>
     <body>
-         <%@ include file="header.jsp" %>
+        
         <header>
             <div class="container_header">
                 <nav>
@@ -103,6 +103,7 @@
                         <li><a href="hometutor.jsp">Trang Chủ</a></li>
                         <li><a href="ProfileTuTorServlet">Thông Tin Cá Nhân</a></li>
                         <li><a href="tutorcoursesservlet">Khóa Học</a></li>
+                        <li><a href="ManageReservation">Đặt lịch</a></li>
                         <li><a href="scheduleservlet">Lịch Dạy</a></li>
                     </ul>
                 </nav>
@@ -232,7 +233,8 @@
                     <label for="totalSessions">Số Buổi Học:</label>
                     <input type="number" id="totalSessionsEdit" name="totalSessions" min="1" required placeholder="Nhập số buổi học">
 
-                   
+<!--                   <label for="totalSessions">Trạng thái</label>
+                    <input type="text" id="courseStatus" name="courseStatus" min="1" required placeholder="Nhập trạng thái">-->
                     
 
                     <button type="submit" class="custom-btn" onclick="return confirm('Bạn có chắc chắn muốn lưu thay đổi?')">Lưu Khóa Học</button>
@@ -417,7 +419,7 @@
 }
 /* Định dạng chung cho form */
 #editCourseForm {
-    width: 50%;
+    width: 100%;
     margin: 20px auto;
     padding: 20px;
     background: #f9f9f9;
@@ -609,6 +611,6 @@
                 }
             }
         </style>
-        <%@ include file="footer.jsp" %>
+
     </body>
 </html>
