@@ -16,10 +16,6 @@ import java.io.PrintWriter;
 import model.Feedback;
 import model.User;
 
-/**
- *
- * @author ICBAdmin
- */
 public class FeedbackServlet extends HttpServlet {
 
     /**
