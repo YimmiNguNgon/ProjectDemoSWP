@@ -96,10 +96,7 @@
                 <h3 class="stat-number">Được học với</h3>
                 <p>Gia sư giàu kinh nghiệm</p>
             </div>
-            <div>
-                <h3 class="stat-number">Các gia sư</h3>
-                <p>Đến từ Bắc vào Nam</p>
-            </div>
+            
         </section>
 
         <!-- Tutor Carousel Section -->
@@ -107,8 +104,8 @@
 
         <!-- Guarantee Section -->
         <section class="guarantee">
-            <h2 class="guarantee-title">Những bài học bạn sẽ thích. Đảm bảo.</h2>
-            <p class="guarantee-text">Hãy thử một gia sư khác miễn phí nếu bạn không hài lòng.</p>
+            <h2 class="guarantee-title">Đa dạng các khóa học Tiếng Anh Online</h2>
+            
         </section>
 
         <!-- Become Tutor Section -->

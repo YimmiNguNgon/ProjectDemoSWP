@@ -152,7 +152,14 @@ strong {
     cursor: pointer;
     transition: background 0.3s ease;
 }
-
+.alert {
+        background-color: #d4edda;
+        color: #155724;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #c3e6cb;
+        border-radius: 5px;
+    }
 .edit-btn:hover {
     background: #005f7a;
 }
@@ -178,9 +185,10 @@ strong {
                         <li><a href="hometutor.jsp">Trang Chủ</a></li>
                         <li><a href="ProfileTuTorServlet">Thông Tin Cá Nhân</a></li>
                         <li><a href="tutorcoursesservlet">Khóa Học</a></li>
+                        <li><a href="ManageReservation">Đặt lịch</a></li>
                         <li><a href="scheduleservlet">Lịch Dạy</a></li>
                     </ul>
-            </nav>
+                </nav>
         </div>
     </header>
 
@@ -190,7 +198,7 @@ strong {
             <div class="profile-info">
                 <img style="border-radius: 0%; width: 225px;height: 260px; 
                     object-fit: cover;
-                    border: 4px solid #007DA3;"src="${requestScope.tutor.imageUrl != null ? requestScope.tutor.imageUrl : 'https://via.placeholder.com/150'}" alt="Gia Sư" width="150">
+                    border: 4px solid #007DA3;" src="${requestScope.tutor.imageUrl != null ? requestScope.tutor.imageUrl : 'https://via.placeholder.com/150'}" alt="Gia Sư" width="150">
                 <div class="details">
                     <c:if test="${not empty requestScope.tutor}">
                         <h3>${requestScope.tutor.email}</h3>
