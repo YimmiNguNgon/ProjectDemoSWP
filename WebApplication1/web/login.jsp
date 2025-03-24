@@ -292,24 +292,11 @@ h2.text-center {
     <div class="form-container sign-in-container">
         <div class="form">
             <h2 class="text-center fw-bold">Đăng Nhập</h2>
-<!--            <p class="text-center">
-                <a href="signupstudent.jsp" class="text-center-student">Sign up as a student</a>
-                <a href="signuptutor.jsp" class="text-center-student">Sign up as a tutor</a>
-            </p>-->
-<!--            <div class="social-login">
-                <button class="btn btn-outline-dark w-100 d-flex align-items-center justify-content-center">
-                    <i class="fab fa-google me-2"></i> Continue with Google
-                </button>
-            </div>
-            <div class="separator d-flex align-items-center my-3">
-                <hr class="flex-grow-1">
-                <span class="mx-2 text-or">or</span>
-                <hr class="flex-grow-1">
-            </div>-->
-            <form action="login" method="post" id="loginForm">
+            <form action="login" method="post" id="loginForm" onsubmit="return validateLoginForm()">
                 <div class="mb-3 text-start">
                     <label>Email</label>
-                    <input type="email" class="form-control" name="email" placeholder="Your email" required>
+                    <input type="email" class="form-control" name="email" placeholder="Your email" required id="loginEmail">
+                    <div id="loginEmailError" class="text-danger" style="display:none;">Please enter a valid email address.</div>
                 </div>
                 <div class="mb-3 text-start">
                     <label>Password</label>
@@ -319,6 +306,7 @@ h2.text-center {
                             <i class="fas fa-eye"></i>
                         </div>
                     </div>
+                    <div id="loginPasswordError" class="text-danger" style="display:none;">Please enter your password.</div>
                 </div>
                 <div class="d-flex justify-content-between align-items-center">
                     <a href="forgotpassword.jsp" class="text-decoration-none">Forgot your password?</a>
@@ -339,39 +327,36 @@ h2.text-center {
     <div class="form-container sign-up-container">
         <div class="form">
             <h2 class="text-center fw-bold">Sign Up</h2>
-            
             <p class="text-center">
                 Already have an account? <a href="#" onclick="toggleSignUp()">Log in</a>
             </p>
-            <p class="text-center">
-                <a href="signupstudent.jsp" class="text-center-student">Sign up as a student</a>
-                <a href="signuptutor.jsp" class="text-center-student">Sign up as a tutor</a>
-            </p>
-            <form action="registerServlet" method="post">
-<!--                <div class="mb-3 text-start">
-                    <label>Full Name</label>
-                    <input type="text" class="form-control" name="fullname" placeholder="Your full name" required>
-                </div>
+            <form action="registerServlet" method="post" onsubmit="return validateSignUpForm()">
                 <div class="mb-3 text-start">
                     <label>Email</label>
-                    <input type="email" class="form-control" name="email" placeholder="Your email" required>
+                    <input type="email" class="form-control" name="email" placeholder="Your email" required id="signupEmail">
+                    <div id="signupEmailError" class="text-danger" style="display:none;">Please enter a valid email address.</div>
                 </div>
-
                 <div class="mb-3 text-start">
                     <label>Password</label>
                     <div class="input-group">
-                        <input type="password" class="form-control" name="password" placeholder="Your password" required>
-                        <div class="input-group-text password-toggle">
+                        <input type="password" class="form-control" name="password" id="signupPassword" placeholder="Your password" required>
+                        <div class="input-group-text password-toggle" onclick="togglePassword('signupPassword')">
                             <i class="fas fa-eye"></i>
                         </div>
                     </div>
-                </div>-->
-
-<!--                <div class="d-flex justify-content-between align-items-center">
-                    <a href="#" class="forgot-password">Forgot your password?</a>
-                </div>-->
-
-<!--                <button type="submit" class="btn-login">Sign Up</button>-->
+                    <div id="signupPasswordError" class="text-danger" style="display:none;">Please enter your password.</div>
+                </div>
+                <div class="mb-3 text-start">
+                    <label>Confirm Password</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Confirm password" required>
+                        <div class="input-group-text password-toggle" onclick="togglePassword('confirmPassword')">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                    </div>
+                    <div id="confirmPasswordError" class="text-danger" style="display:none;">Passwords do not match.</div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Sign Up</button>
             </form>
         </div>
     </div>
@@ -413,7 +398,67 @@ h2.text-center {
             icon.classList.replace("fa-eye-slash", "fa-eye");
         }
     }
+
+    function validateLoginForm() {
+        let email = document.getElementById("loginEmail").value;
+        let password = document.getElementById("loginPassword").value;
+        let valid = true;
+
+        // Validate email format
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) {
+            document.getElementById("loginEmailError").style.display = "block";
+            valid = false;
+        } else {
+            document.getElementById("loginEmailError").style.display = "none";
+        }
+
+        // Validate password
+        if (password === "") {
+            document.getElementById("loginPasswordError").style.display = "block";
+            valid = false;
+        } else {
+            document.getElementById("loginPasswordError").style.display = "none";
+        }
+
+        return valid;
+    }
+
+    function validateSignUpForm() {
+        let email = document.getElementById("signupEmail").value;
+        let password = document.getElementById("signupPassword").value;
+        let confirmPassword = document.getElementById("confirmPassword").value;
+        let valid = true;
+
+        // Validate email format
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) {
+            document.getElementById("signupEmailError").style.display = "block";
+            valid = false;
+        } else {
+            document.getElementById("signupEmailError").style.display = "none";
+        }
+
+        // Validate password
+        if (password === "") {
+            document.getElementById("signupPasswordError").style.display = "block";
+            valid = false;
+        } else {
+            document.getElementById("signupPasswordError").style.display = "none";
+        }
+
+        // Validate password confirmation
+        if (password !== confirmPassword) {
+            document.getElementById("confirmPasswordError").style.display = "block";
+            valid = false;
+        } else {
+            document.getElementById("confirmPasswordError").style.display = "none";
+        }
+
+        return valid;
+    }
 </script>
+
 <script src="resources/script/jquery-3.7.1.min.js"></script>
 
 </body>
