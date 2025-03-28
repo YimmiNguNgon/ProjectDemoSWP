@@ -59,47 +59,51 @@ public class ManageReservationController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        String tutorIdParam = session.getAttribute("tutorID") + "";
-        if(tutorIdParam.equals("null")) {
-            response.sendRedirect("login");
-            return;
-        }
-        System.out.println(tutorIdParam);
-        int tutorId = (tutorIdParam != null) ? Integer.parseInt(tutorIdParam) : 0;
-        CourseRequestDAO courseRequestDAO = new CourseRequestDAO();
-        List<CourseRequest> courseRequests = courseRequestDAO.getRequestsByTutor(tutorId);
-
-        request.setAttribute("courseRequests", courseRequests);
-
-        request.getRequestDispatcher("manage-reservation.jsp").forward(request, response);
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    HttpSession session = request.getSession();
+    String tutorIdParam = (session.getAttribute("tutorID") != null) ? session.getAttribute("tutorID").toString() : null;
+    if (tutorIdParam == null || tutorIdParam.equals("null")) {
+        response.sendRedirect("login");
+        return;
+    }
+    
+    int tutorId = 0;
+    try {
+        tutorId = Integer.parseInt(tutorIdParam);
+    } catch (NumberFormatException e) {
+        // handle invalid tutorId
+        response.sendRedirect("login");
+        return;
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        int requestId = Integer.parseInt(request.getParameter("requestId"));
-        String action = request.getParameter("action");
+    CourseRequestDAO courseRequestDAO = new CourseRequestDAO();
+    List<CourseRequest> courseRequests = courseRequestDAO.getRequestsByTutor(tutorId);
 
-        CourseRequestDAO requestDAO = new CourseRequestDAO();
-        if ("accept".equals(action)) {
-            requestDAO.updateRequestStatus(requestId, "Accepted");
-        } else if ("reject".equals(action)) {
-            requestDAO.updateRequestStatus(requestId, "Rejected");
-        }
+    request.setAttribute("courseRequests", courseRequests);
+    request.getRequestDispatcher("manage-reservation.jsp").forward(request, response);
+}
 
-        response.sendRedirect("ManageReservation");
+@Override
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    int requestId = Integer.parseInt(request.getParameter("requestId"));
+    String action = request.getParameter("action");
+
+    CourseRequestDAO requestDAO = new CourseRequestDAO();
+    
+    if ("accept".equals(action)) {
+        requestDAO.updateRequestStatus(requestId, "Accepted");
+    } else if ("reject".equals(action)) {
+        requestDAO.updateRequestStatus(requestId, "Rejected");
+    } else {
+        // Handle invalid action
+        response.sendRedirect("errorPage.jsp");
+        return;
     }
+
+    response.sendRedirect("ManageReservation");
+}
 
     /**
      * Returns a short description of the servlet.

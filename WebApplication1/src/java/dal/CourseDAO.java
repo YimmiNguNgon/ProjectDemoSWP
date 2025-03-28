@@ -2,6 +2,7 @@ package dal;
 
 import context.DBContext;
 import java.sql.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import model.Course;
@@ -37,7 +38,7 @@ public class CourseDAO extends DBContext {
         }
         return courseList;
     }
-    
+
     public boolean deleteCourse(int courseID) {
         String deleteTutorCoursesSql = "DELETE FROM TutorCourses WHERE CourseID = ?";
         String deleteCourseSql = "DELETE FROM Courses WHERE CourseID = ?";
@@ -68,42 +69,137 @@ public class CourseDAO extends DBContext {
         } finally {
             // Đảm bảo đóng các tài nguyên (PreparedStatement)
             try {
-                if (stmt1 != null) stmt1.close();
-                if (stmt2 != null) stmt2.close();
+                if (stmt1 != null) {
+                    stmt1.close();
+                }
+                if (stmt2 != null) {
+                    stmt2.close();
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
     }
+
     public List<Courses> getAllCourses() {
-    List<Courses> coursesList = new ArrayList<>();
-    String sql = "SELECT CourseID, CourseName, Description, Level, Price, Rating, TotalSessions, CourseStatus FROM Courses"; // ✅ Truy vấn đầy đủ cột
+        List<Courses> coursesList = new ArrayList<>();
+            String sql = "SELECT CourseID, CourseName, Description, Level, Price, Rating, TotalSessions, CourseStatus FROM Courses"; // Truy vấn đầy đủ cột
 
-    try (PreparedStatement stmt = connection.prepareStatement(sql);
-         ResultSet rs = stmt.executeQuery()) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
-        while (rs.next()) {
-            coursesList.add(new Courses(
-                rs.getInt("CourseID"),
-                rs.getString("CourseName"),
-                rs.getString("Description"),
-                rs.getString("Level"),
-                rs.getDouble("Price"),
-                rs.getFloat("Rating"),
-                rs.getInt("TotalSessions"),  // ✅ Thêm số buổi học
-                rs.getString("CourseStatus") // ✅ Thêm trạng thái khóa học
-            ));
+                // Định dạng giá trị với dấu phân cách hàng nghìn
+                DecimalFormat formatter = new DecimalFormat("#,###");
+
+                while (rs.next()) {
+                    double price = rs.getDouble("Price");
+                    String formattedPrice = formatter.format(price);  // Định dạng giá
+
+                    // Chỉ truyền giá trị gốc vào constructor
+                    coursesList.add(new Courses(
+                            rs.getInt("CourseID"),
+                            rs.getString("CourseName"),
+                            rs.getString("Description"),
+                            rs.getString("Level"),
+                            price,  // Truyền giá trị số gốc
+                            rs.getFloat("Rating"),
+                            rs.getInt("TotalSessions"),
+                            rs.getString("CourseStatus")
+                    ));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return coursesList;
         }
-    } catch (Exception e) {
-        e.printStackTrace();
+    
+    // Phương thức lọc khóa học theo trình độ
+    public List<Courses> getCoursesByLevel(String level) {
+        List<Courses> coursesList = new ArrayList<>();
+        String sql = "SELECT CourseID, CourseName, Description, Level, Price, Rating, TotalSessions, CourseStatus FROM Courses WHERE Level = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, level); // Set trình độ vào câu truy vấn
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    coursesList.add(new Courses(
+                            rs.getInt("CourseID"),
+                            rs.getString("CourseName"),
+                            rs.getString("Description"),
+                            rs.getString("Level"),
+                            rs.getDouble("Price"),
+                            rs.getFloat("Rating"),
+                            rs.getInt("TotalSessions"),
+                            rs.getString("CourseStatus")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return coursesList;
     }
-    return coursesList;
-}
+
+    public Courses getCourseById(int courseId) {
+        Courses course = null;
+        String sql = "SELECT CourseID, CourseName, Description, Level, Price, Rating, TotalSessions, CourseStatus FROM Courses WHERE CourseID = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, courseId);  // Gán CourseID vào truy vấn
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    course = new Courses(
+                            rs.getInt("CourseID"),
+                            rs.getString("CourseName"),
+                            rs.getString("Description"),
+                            rs.getString("Level"),
+                            rs.getDouble("Price"),
+                            rs.getFloat("Rating"),
+                            rs.getInt("TotalSessions"),
+                            rs.getString("CourseStatus")
+                    );
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return course;
+    }
+
+    public List<Courses> getCoursesByStudentId(int studentId) {
+        List<Courses> courses = new ArrayList<>();
+        String query = "SELECT c.CourseID, c.CourseName, c.Description, c.Level, c.Price, c.Rating, c.TotalSessions, c.CourseStatus "
+                + "FROM StudentCourses sc "
+                + "JOIN Courses c ON sc.CourseID = c.CourseID "
+                + "WHERE sc.StudentID = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, studentId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Courses course = new Courses(
+                            rs.getInt("CourseID"),
+                            rs.getString("CourseName"),
+                            rs.getString("Description"),
+                            rs.getString("Level"),
+                            rs.getDouble("Price"),
+                            rs.getFloat("Rating"),
+                            rs.getInt("TotalSessions"),
+                            rs.getString("CourseStatus")
+                    );
+                    courses.add(course);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return courses;
+    }
 
     public boolean markAttendance(int tutorId, int courseId, int sessionNumber, String status) {
         boolean isSuccessful = false;
         String sql = "UPDATE Attendance SET Status = ?, SessionDate = GETDATE() "
-                   + "WHERE CourseID = ? AND SessionNumber = ?";
+                + "WHERE CourseID = ? AND SessionNumber = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, status);  // Trạng thái điểm danh (Present/Absent)
@@ -119,11 +215,55 @@ public class CourseDAO extends DBContext {
         }
         return isSuccessful;
     }
-    
+
+    public List<Course> getCoursesByUserIdReview(int userId) {
+        List<Course> courses = new ArrayList<>();
+        String sql = "SELECT c.CourseID, c.CourseName, c.Description, c.Level, c.Price, c.Rating, sc.StudentID, sc.Status "
+                + "FROM Courses c "
+                + "JOIN StudentCourses sc ON c.CourseID = sc.CourseID "
+                + "JOIN Students s ON sc.StudentID = s.StudentID "
+                + "WHERE s.UserID = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Course course = new Course();
+                    course.setCourseId(rs.getInt("CourseID"));
+                    course.setCourseName(rs.getString("CourseName"));
+                    course.setDescription(rs.getString("Description"));
+                    course.setLevel(rs.getString("Level"));
+                    course.setPrice(rs.getDouble("Price"));
+                    course.setRating(rs.getFloat("Rating"));
+                    course.setStudentId(rs.getInt("StudentID"));
+                    course.setCourseStatus(rs.getString("Status")); 
+                    courses.add(course);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return courses;
+    }
+
+    public void updateCourseStatusStudent(int courseId, int studentId) {
+        String sql = "UPDATE StudentCourses SET Status = ? WHERE CourseID = ? AND studentID =?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, "Hoàn thành");
+            stmt.setInt(2, courseId);
+            stmt.setInt(3, studentId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean updateCompletedSessions(int studentId, int courseId) {
         boolean isUpdated = false;
         String sql = "UPDATE StudentCourses SET completedSessions = completedSessions + 1 "
-                   + "WHERE StudentID = ? AND CourseID = ?";
+                + "WHERE StudentID = ? AND CourseID = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, studentId);  // ID học viên
@@ -138,8 +278,7 @@ public class CourseDAO extends DBContext {
         }
         return isUpdated;
     }
-    
-    
+
     public boolean checkCourseCompletion(int courseId, int sessionCount) {
         boolean isCompleted = false;
         String sql = "SELECT completedSessions FROM StudentCourses WHERE CourseID = ?";
@@ -157,6 +296,81 @@ public class CourseDAO extends DBContext {
         return isCompleted;
     }
 
+    public List<Course> getAvailableCourses() {
+        List<Course> courses = new ArrayList<>();
+        String sql = "SELECT * FROM Courses WHERE CourseStatus = 'Ongoing'"; // hoặc theo trạng thái khóa học bạn muốn
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {  // Xóa dấu ngoặc thừa ở đây
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Course course = new Course();
+                course.setCourseId(rs.getInt("CourseID"));
+                course.setCourseName(rs.getString("CourseName"));
+                course.setDescription(rs.getString("Description"));
+                course.setLevel(rs.getString("Level"));
+                course.setPrice(rs.getDouble("Price"));
+                courses.add(course);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return courses;
+    }
+    public List<Courses> getCoursesByTutorId(int tutorId) {
+        List<Courses> courses = new ArrayList<>();
+        String sql = "SELECT C.CourseID, C.CourseName, C.Description, C.Level, C.Price, C.TotalSessions, C.CourseStatus, C.Rating "
+                + "FROM TutorCourses TC "
+                + "JOIN Courses C ON TC.CourseID = C.CourseID "
+                + "WHERE TC.TutorID = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, tutorId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    // Lấy CourseStatus và Rating từ ResultSet
+                    Courses course = new Courses(
+                            rs.getInt("CourseID"),
+                            rs.getString("CourseName"),
+                            rs.getString("Description"),
+                            rs.getString("Level"),
+                            rs.getDouble("Price"),
+                            rs.getFloat("Rating"), // Lấy rating từ ResultSet
+                            rs.getInt("TotalSessions"),
+                            rs.getString("CourseStatus") // Lấy CourseStatus từ ResultSet
+                    );
+                    courses.add(course);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return courses;
+    }
+    public Courses getCoursePayment(int id) {
+          String sql = "  SELECT CourseName, price from Courses C\n"
+                  + "  join Payments P on P.CourseID = C.CourseID\n"
+                  + "  where P.PaymentID = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+               return new Courses(rs.getInt("CourseID"),
+                            rs.getString("CourseName"),
+                            rs.getString("Description"),
+                            rs.getString("Level"),
+                            rs.getDouble("Price"),
+                            rs.getFloat("Rating"),
+                            rs.getInt("TotalSessions"),
+                            rs.getString("CourseStatus"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 //    public static void main(String[] args) {
 //        CourseDAO courseDAO = new CourseDAO();
 //        List<Course> courses = courseDAO.getCoursesByUserId(4); // Thử với UserID = 4
@@ -166,5 +380,4 @@ public class CourseDAO extends DBContext {
 //            System.out.println(course);
 //        }
 //    }
-
 }

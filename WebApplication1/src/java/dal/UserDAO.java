@@ -5,6 +5,9 @@
 package dal;
 
 import context.DBContext;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,57 +20,92 @@ import model.Account;
 import model.Role;
 import model.User;
 
-/**
- *
- * @author hello
- */
-public class UserDAO extends DBContext{
+public class UserDAO extends DBContext {
 
     PreparedStatement ps = null;
     ResultSet rs = null;
 
-        public User getUserByEmailAndPassword(String email, String password) {
+    public User getUserByEmailAndPassword(String email, String password) {
         User user = null;
-        String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
+        // Cập nhật câu truy vấn để lấy thông tin từ bảng Users
+        String sql = "SELECT * FROM Users WHERE Email = ? AND Password = ?";
+
         try {
+            // Chuẩn bị câu truy vấn
             ps = connection.prepareStatement(sql);
-            ps.setString(1, email);
-            ps.setString(2, password);
+            ps.setString(1, email);  // Thiết lập email
+            ps.setString(2, password);  // Thiết lập password
+
+            // Thực thi câu truy vấn và nhận kết quả
             rs = ps.executeQuery();
 
+            // Nếu có kết quả trả về, khởi tạo đối tượng User
             if (rs.next()) {
-                user = new User(rs.getInt(1),  // Assuming the first column is ID
-                                rs.getInt(2),  // Second column (could be user type)
-                                rs.getString(3),  // Email
-                                rs.getString(4),  // Password
-                                rs.getString(5),  // Full Name
-                                rs.getString(6),
-                                rs.getString(7),
-                                rs.getString(8)); // Any other relevant field (like phone, etc)
+                user = new User(
+                        rs.getInt("UserID"), // Lấy UserID từ cột đầu tiên
+                        rs.getInt("role_id"), // Lấy role_id từ cột thứ hai
+                        rs.getString("Email"), // Lấy email
+                        rs.getString("Name"), // Lấy tên đầy đủ
+                        rs.getString("Password"), // Lấy password
+                        rs.getString("Phone"), // Lấy phone
+                        rs.getString("Gender"), // Lấy gender
+                        rs.getString("Address"), // Lấy address
+                        rs.getString("image_url") // Lấy image_url nếu có
+                );
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return user;
+        return user; // Trả về đối tượng User hoặc null nếu không tìm thấy
     }
-        
-        
-        
-        public int getTutorIDByUserID(int userID) {
-            String sql = "SELECT TutorID FROM Tutors WHERE UserID = ?";
-            try (PreparedStatement ps = connection.prepareStatement(sql)) {
-                ps.setInt(1, userID);
-                ResultSet rs = ps.executeQuery();
-                if (rs.next()) {
-                    return rs.getInt("TutorID");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+
+    public User getUserByEmail(String email) {
+        User user = null;
+        String sql = "SELECT * FROM Users WHERE Email = ?"; // Chỉ tìm user theo email
+
+        try {
+            // Chuẩn bị câu truy vấn
+            ps = connection.prepareStatement(sql);
+            ps.setString(1, email);
+
+            // Thực thi câu truy vấn và nhận kết quả
+            rs = ps.executeQuery();
+
+            // Nếu có kết quả trả về, khởi tạo đối tượng User
+            if (rs.next()) {
+                user = new User(
+                        rs.getInt("UserID"),
+                        rs.getInt("role_id"),
+                        rs.getString("Email"),
+                        rs.getString("Name"),
+                        rs.getString("Password"), // Đây là mật khẩu đã mã hóa
+                        rs.getString("Phone"),
+                        rs.getString("Gender"),
+                        rs.getString("Address"),
+                        rs.getString("image_url")
+                );
             }
-            return -1; // Trả về -1 nếu không tìm thấy
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        
-        public boolean isDuplicatedEmail(String email) {
+        return user; // Trả về đối tượng User hoặc null nếu không tìm thấy
+    }
+
+    public int getTutorIDByUserID(int userID) {
+        String sql = "SELECT TutorID FROM Tutors WHERE UserID = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("TutorID");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1; // Trả về -1 nếu không tìm thấy
+    }
+
+    public boolean isDuplicatedEmail(String email) {
         String sql = """
                      SELECT 1
                        FROM [dbo].[Users]
@@ -126,34 +164,61 @@ public class UserDAO extends DBContext{
     }
 
     public User getUser(String email, String password) {
-    String sql = """
-                 SELECT [UserID], [role_id], [Name], [Email], [Password], 
-                        [Phone], [Gender], [Address]
-                 FROM [dbo].[Users]
-                 WHERE [Email] = ? AND [Password] = ? """;
-    try {
-        PreparedStatement st = connection.prepareStatement(sql);
-        st.setString(1, email);
-        st.setString(2, password);
-        ResultSet rs = st.executeQuery();
+        String sql = """
+                     SELECT [UserID], [role_id], [Name], [Email], [Password], 
+                            [Phone], [Gender], [Address], [image_url]
+                     FROM [dbo].[Users]
+                     WHERE [Email] = ? AND [Password] = ? """;
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, email);
+            st.setString(2, password);
+            ResultSet rs = st.executeQuery();
 
-        if (rs.next()) {
-            // Lấy dữ liệu từ ResultSet
-            int userId = rs.getInt("UserID");
-            int role = rs.getInt("role_id"); 
-            String fullName = rs.getString("Name");
-            String phone = rs.getString("Phone");  // Đổi từ int -> String
-            String gender = rs.getString("Gender");
-            String address = rs.getString("Address");
+            if (rs.next()) {
+                // Lấy dữ liệu từ ResultSet
+                int userId = rs.getInt("UserID");
+                int role = rs.getInt("role_id");
+                String fullName = rs.getString("Name");
+                String phone = rs.getString("Phone");  // Đổi từ int -> String
+                String gender = rs.getString("Gender");
+                String address = rs.getString("Address");
+                String imageUrl = rs.getString("image_url"); // Lấy image_url
 
-            // Khởi tạo đối tượng User với đầy đủ thông tin
-            return new User(userId, role, email, fullName, password, phone, gender, address);
+                // Khởi tạo đối tượng User với đầy đủ thông tin
+                return new User(userId, role, email, fullName, password, phone, gender, address, imageUrl); // Thêm imageUrl
+            }
+        } catch (SQLException ex) {
+            System.out.println("Lỗi khi lấy thông tin User: " + ex);
         }
-    } catch (SQLException ex) {
-        System.out.println("Lỗi khi lấy thông tin User: " + ex);
+        return null;
     }
-    return null;
-}
+
+    public boolean editUser(User user) {
+        String sql = """
+                 UPDATE [dbo].[Users]
+                 SET [Name] = ?, [Email] = ?, [Phone] = ?, 
+                     [Gender] = CASE WHEN ? IN (N'Nam', N'Nữ') THEN ? ELSE [Gender] END,
+                     [Address] = ?, [image_url] = ?
+                 WHERE [UserID] = ?
+                 """;
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setString(1, user.getFullName());
+            st.setString(2, user.getEmail());
+            st.setString(3, user.getPhoneNumber());
+            st.setString(4, user.getGender());
+            st.setString(5, user.getGender()); 
+            st.setString(6, user.getAddress());
+            st.setString(7, user.getImageUrl());
+            st.setInt(8, user.getId());
+
+            int rowsUpdated = st.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException ex) {
+            System.out.println("Error updating user information: " + ex);
+            return false;
+        }
+    }
 
     //account
     public Account getAccountByUId(String uid) {
@@ -164,22 +229,30 @@ public class UserDAO extends DBContext{
                            ,[Email]
                            ,[Password]
                            ,[Phone]
+                           ,[Gender]
+                           ,[Address]
+                           ,[image_url]
                        FROM [dbo].[Users]
-                     where UserID = ?"""; //thuc thi cau truy van
+                       where UserID = ?"""; //thuc thi cau truy van
         try {
             PreparedStatement pre = connection.prepareStatement(sql);//goi cau truy van
             pre.setString(1, uid);//set id vao dau ? thu nhat
             ResultSet rs = pre.executeQuery();//thuc thi cau truy van 
             while (rs.next()) {
-                return new Account(rs.getInt(1),
-                        rs.getInt(2),
-                        rs.getString(3),
-                        rs.getString(4),
-                        rs.getString(5),
-                        rs.getString(6));
+                return new Account(
+                        rs.getInt(1), // UserID
+                        rs.getInt(2), // role_id
+                        rs.getString(3), // Name
+                        rs.getString(4), // Email
+                        rs.getString(5), // Password
+                        rs.getString(6), // Phone
+                        rs.getString(7), // Gender
+                        rs.getString(8), // Address
+                        rs.getString(9) // image_url
+                );
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
         return null;
     }
@@ -193,15 +266,30 @@ public class UserDAO extends DBContext{
             PreparedStatement pre = connection.prepareStatement(sql);//goi cau truy van
             ResultSet rs = pre.executeQuery();//thuc thi cau truy van
             while (rs.next()) {
-                list.add(new Account(rs.getInt(1),
-                        rs.getInt(2),
-                        rs.getString(3),
-                        rs.getString(4),
-                        rs.getString(5),
-                        rs.getString(6)));
+//                list.add(new Account(rs.getInt(1),
+//                        rs.getInt(2),
+//                        rs.getString(3),
+//                        rs.getString(4),
+//                        rs.getString(5),
+//                        rs.getString(6),
+//                        rs.getString(7),
+//                        rs.getString(8),
+//                        rs.getString(9)));
+                int userId = rs.getInt(1);
+                int roleId = rs.getInt(2);
+                String name = rs.getString(3);
+                String email = rs.getString(4);
+                String password = rs.getString(5);
+                String phone = rs.getString(6);
+                String gender = rs.getString(7);
+                String address = rs.getString(8);
+                String image = rs.getString(9);
+
+                list.add(new Account(userId, roleId, name, email, password, phone, gender, address, image));
             }
 
         } catch (SQLException e) {
+            e.printStackTrace();
         }
         return list;
     }
@@ -221,27 +309,38 @@ public class UserDAO extends DBContext{
     }
 
     //insert account
-    public void insertAccount(String role, String name, String email, String pass, String phone) {
+    public void insertAccount(String role, String name, String email, String pass, String phone, String gender, String address, String image) {
         String sql = """
-                     INSERT INTO Users (role_id, Name, Email, Password, Phone)
-                     VALUES 
-                     (?,?,?,?,?)""";
+                     INSERT INTO [dbo].[Users]
+                                ([role_id]
+                                ,[Name]
+                                ,[Email]
+                                ,[Password]
+                                ,[Phone]
+                                ,[Gender]
+                                ,[Address]
+                                ,[image_url])
+                          VALUES (?, ?, ?, ?, ?,?,?,?)""";
         try {
             PreparedStatement pre = connection.prepareStatement(sql);//goi cau truy van
-
             pre.setString(1, role);//set cid vao dau ? thu nhat
             pre.setString(2, name);//set cid vao dau ? thu nhat
             pre.setString(3, email);//set cid vao dau ? thu nhat
             pre.setString(4, pass);//set cid vao dau ? thu nhat
             pre.setString(5, phone);//set cid vao dau ? thu nhat
+            pre.setString(6, gender);//set cid vao dau ? thu nhat
+            pre.setString(7, address);//set cid vao dau ? thu nhat
+            pre.setString(8, image);//set cid vao dau ? thu nhat
             ResultSet rs = pre.executeQuery();//thuc thi cau truy van 
         } catch (SQLException e) {
+            e.printStackTrace();
         }
 
     }
 
     //edit account
-    public void editAccount(String role, String name, String email, String pass, String phone, String uid) {
+    public void editAccount(String role, String name, String email, String pass, String phone, String gender, String address, String image,
+            String uid) {
         String sql = """
                      UPDATE [dbo].[Users]
                         SET [role_id] = ?
@@ -249,7 +348,10 @@ public class UserDAO extends DBContext{
                            ,[Email] = ?
                            ,[Password] = ?
                            ,[Phone] = ?
-                      WHERE UserID = ?""";
+                           ,[Gender] = ?
+                           ,[Address] = ?
+                           ,[image_url] = ?
+                      WHERE  UserID = ?""";
         try {
             PreparedStatement pre = connection.prepareStatement(sql);//goi cau truy van
 
@@ -258,18 +360,150 @@ public class UserDAO extends DBContext{
             pre.setString(3, email);//set cid vao dau ? thu nhat
             pre.setString(4, pass);//set cid vao dau ? thu nhat
             pre.setString(5, phone);//set cid vao dau ? thu nhat
-            pre.setString(6, uid);//set cid vao dau ? thu nhat
+            pre.setString(6, gender);//set cid vao dau ? thu nhat
+            pre.setString(7, address);//set cid vao dau ? thu nhat
+            pre.setString(8, image);//set cid vao dau ? thu nhat
+            pre.setString(9, uid);//set cid vao dau ? thu nhat
             ResultSet rs = pre.executeQuery();//thuc thi cau truy van 
         } catch (SQLException e) {
+            e.printStackTrace();
         }
 
     }
-//        public static void main(String[] args) {
-//
-//            UserDAO user = new UserDAO();
-//            System.out.println(user.getUserByEmailAndPassword("admin@gmail.com", "123456"));
-//    }
-        
 
- 
+    public List<Account> getAccountByRole(int role) {
+        List<Account> list = new ArrayList<>();
+        String sql = "SELECT * FROM Users WHERE role_id = ?"; //thuc thi cau truy van
+        try {
+            PreparedStatement pre = connection.prepareStatement(sql);//goi cau truy van
+            pre.setInt(1, role);//set id vao dau ? thu nhat
+            ResultSet rs = pre.executeQuery();//thuc thi cau truy van 
+            while (rs.next()) {
+//                list.add(new Account(
+//                        rs.getInt("userId"),
+//                        rs.getInt("roleId"),
+//                        rs.getString("name"),
+//                        rs.getString("email"),
+//                        rs.getString("password"),
+//                        rs.getString("phone"),
+//                        rs.getString("gender"),
+//                        rs.getString("address"),
+//                        rs.getString("image_url")
+//                ));
+                int userId = rs.getInt(1);
+                int roleId = rs.getInt(2);
+                String name = rs.getString(3);
+                String email = rs.getString(4);
+                String password = rs.getString(5);
+                String phone = rs.getString(6);
+                String gender = rs.getString(7);
+                String address = rs.getString(8);
+                String image = rs.getString(9);
+
+                list.add(new Account(userId, roleId, name, email, password, phone, gender, address, image));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public User getAccountByUsername(String username) {
+
+        try {
+            String sql = "SELECT * FROM Users WHERE Name = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new User(
+                        rs.getInt("UserID"), // Lấy UserID từ cột đầu tiên
+                        rs.getInt("role_id"), // Lấy role_id từ cột thứ hai
+                        rs.getString("Email"), // Lấy email
+                        rs.getString("Name"), // Lấy tên đầy đủ
+                        rs.getString("Password"), // Lấy password
+                        rs.getString("Phone"), // Lấy phone
+                        rs.getString("Gender"), // Lấy gender
+                        rs.getString("Address"), // Lấy address
+                        rs.getString("image_url")); // Lấy image_url nếu có;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return null;
+    }
+
+    // Trong lớp UserDAO
+    public void insertStudent(String name, String email, String pass, String phone) {
+        String sql = "INSERT INTO Users (role_id, Name, Email, Password, Phone) VALUES (?,?,?, ?,?)";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, 4); // Sinh viên có role_id = 4
+            ps.setString(2, name);
+            ps.setString(3, email);
+            ps.setString(4, pass);
+            ps.setString(5, phone);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void insertTutor(String name, String email, String pass, String phone, int role) {
+        String sql = "INSERT INTO Users (role_id, Name, Email, Password, Phone) VALUES (?,?,?,?,?)";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, role); // Đặt role_id là 3 cho gia sư
+            ps.setString(2, name);
+            ps.setString(3, email);
+            ps.setString(4, pass); // Mật khẩu sẽ không mã hóa nếu chưa sử dụng mã hóa
+            ps.setString(5, phone);
+            ps.executeUpdate();
+            System.out.println("Đăng ký gia sư thành công.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+// Phương thức kiểm tra email đã tồn tại hay chưa
+    private boolean isEmailExists(String email) {
+        String query = "SELECT COUNT(*) FROM Users WHERE Email = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                return true; // Email đã tồn tại
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+// Phương thức mã hóa mật khẩu (dùng SHA-256 hoặc một thư viện mã hóa mạnh mẽ hơn như bcrypt)
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                hexString.append(String.format("%02x", b));
+            }
+            return hexString.toString(); // Trả về mật khẩu đã mã hóa
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return password; // Nếu có lỗi thì trả về mật khẩu ban đầu
+        }
+    }
+
+    public static void updatePassword(Connection connection, String email, String newPassword) {
+        String query = "UPDATE users SET password = ? WHERE email = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, newPassword);  // Chỉ cần sử dụng mật khẩu mới trực tiếp
+            ps.setString(2, email);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -74,9 +74,11 @@ public class CourseRequestDAO extends DBContext {
     public List<CourseRequest> getRequestsByTutor(int tutorId) {
         List<CourseRequest> list = new ArrayList<>();
         String sql = "SELECT * FROM CourseRequests WHERE TutorID = ?";
+
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, tutorId);
             ResultSet rs = stmt.executeQuery();
+
             while (rs.next()) {
                 User user = this.getUserByStudentId(rs.getInt("StudentID"));
                 Course course = this.getCourseById(rs.getInt("CourseID"));
@@ -88,7 +90,7 @@ public class CourseRequestDAO extends DBContext {
                         rs.getTimestamp("RequestDate"),
                         rs.getString("Status"),
                         user,
-                        this.getSchedulesByStudentAndTutor(rs.getInt("StudentID"), tutorId),course));
+                        this.getSchedulesByStudentAndTutor(rs.getInt("StudentID"), tutorId), course));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -113,7 +115,7 @@ public class CourseRequestDAO extends DBContext {
                         rs.getDouble("Price"),
                         rs.getFloat("Rating"),
                         rs.getInt("TotalSessions"), // ✅ Thêm totalSessions
-                        rs.getString("CourseStatus") 
+                        rs.getString("CourseStatus")
                 );
             }
         } catch (SQLException e) {
@@ -126,15 +128,44 @@ public class CourseRequestDAO extends DBContext {
         if (!newStatus.equals("Pending") && !newStatus.equals("Accepted") && !newStatus.equals("Rejected")) {
             throw new IllegalArgumentException("Invalid status value");
         }
-        String sql = "UPDATE CourseRequests SET Status = ? WHERE RequestID = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        String updateSql = "UPDATE CourseRequests SET Status = ? WHERE RequestID = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
             stmt.setString(1, newStatus);
             stmt.setInt(2, requestId);
-            return stmt.executeUpdate() > 0;
+            int rowsAffected = stmt.executeUpdate();
+            if (newStatus.equals("Accepted") && rowsAffected > 0) {
+                String selectRequestSql = "SELECT StudentID, CourseID FROM CourseRequests WHERE RequestID = ?";
+                try (PreparedStatement selectStmt = conn.prepareStatement(selectRequestSql)) {
+                    selectStmt.setInt(1, requestId);
+                    ResultSet rs = selectStmt.executeQuery();
+
+                    if (rs.next()) {
+                        int studentId = rs.getInt("StudentID");
+                        int courseId = rs.getInt("CourseID");
+                        String checkSql = "SELECT COUNT(*) FROM StudentCourses WHERE StudentID = ? AND CourseID = ?";
+                        try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+                            checkStmt.setInt(1, studentId);
+                            checkStmt.setInt(2, courseId);
+                            ResultSet checkRs = checkStmt.executeQuery();
+
+                            if (checkRs.next() && checkRs.getInt(1) == 0) {
+                                String insertSql = "INSERT INTO StudentCourses (StudentID, CourseID, completedSessions, Status) VALUES (?, ?, 0, N'Đang diễn ra')";
+                                try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+                                    insertStmt.setInt(1, studentId);
+                                    insertStmt.setInt(2, courseId);
+                                    insertStmt.executeUpdate();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return rowsAffected > 0;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     public User getUserByStudentId(int studentId) {

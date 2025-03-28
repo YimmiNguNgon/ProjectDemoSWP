@@ -10,10 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Student;
 
-/**
- *
- * @author Huy
- */
 public class StudentCourseDAO extends DBContext {
 
     public List<Student> getStudentsByCourseId(int courseId) {
