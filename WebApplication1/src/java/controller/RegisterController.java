@@ -5,21 +5,19 @@
 
 package controller;
 
+import dal.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 /**
  *
  * @author Huy
  */
-@WebServlet(name="logout", urlPatterns={"/logout"})
-public class LogoutServlet extends HttpServlet {
+public class RegisterController extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -36,10 +34,10 @@ public class LogoutServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LogoutServlet</title>");  
+            out.println("<title>Servlet RegisterController</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet LogoutServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet RegisterController at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -56,7 +54,7 @@ public class LogoutServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+         request.getRequestDispatcher("register.jsp").forward(request, response);
     } 
 
     /** 
@@ -67,14 +65,35 @@ public class LogoutServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-      HttpSession session = request.getSession(false); // Lấy session hiện tại (nếu có)
-        if (session != null) {
-            session.invalidate(); // Xóa session khi đăng xuất
+        protected void doPost(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException {
+            String name = request.getParameter("fullname");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        String phone = request.getParameter("phone");
+        String role = request.getParameter("role");
+
+        UserDAO userDAO = new UserDAO();
+
+        boolean registrationSuccess = false;
+
+        if ("student".equals(role)) {
+            // Gọi phương thức insertStudent, không cần gán vào boolean vì nó không trả về giá trị
+            userDAO.insertStudent(name, email, password, phone);
+            registrationSuccess = true;
+        } else if ("tutor".equals(role)) {
+            // Gọi phương thức insertTutor, không cần gán vào boolean vì nó không trả về giá trị
+            userDAO.insertTutor(name, email, password, phone, 3);  // Đảm bảo role = 3 cho gia sư
+            registrationSuccess = true;
         }
-        response.sendRedirect("login.jsp"); // Chuyển hướng về trang login
-    }
+
+        if (registrationSuccess) {
+            response.sendRedirect("./login?status=success");  // Chuyển hướng đến trang login nếu đăng ký thành công
+        } else {
+            request.setAttribute("error", "Đăng ký không thành công. Vui lòng thử lại.");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
+        }
+    }// Quay lại trang đăng ký nếu thất bại
 
     /** 
      * Returns a short description of the servlet.

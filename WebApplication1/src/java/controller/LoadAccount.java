@@ -11,12 +11,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Account;
 
 /**
  *
  * @author Admin
  */
-public class EditAccount extends HttpServlet {
+public class LoadAccount extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,18 +32,13 @@ public class EditAccount extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            String role = request.getParameter("role");
-            String name = request.getParameter("name");
-            String email = request.getParameter("email");
-            String pass = request.getParameter("pass");
-            String phone = request.getParameter("phone");
-            String gender = request.getParameter("gender");
-            String address = request.getParameter("address");
-            String image = request.getParameter("image");
             String uid = request.getParameter("uid");
             UserDAO udao = new UserDAO();
-            udao.editAccount(role, name, email, pass, phone, gender, address, image, uid);
-            response.sendRedirect("manageruser");
+            Account a = udao.getAccountByUId(uid);
+            System.out.println("UserID received: " + uid); // Debug
+            request.setAttribute("detail", a);
+//            System.out.println("Account retrieved: " + a); // Debug
+            request.getRequestDispatcher("editaccount.jsp").forward(request, response);
         }
     }
 

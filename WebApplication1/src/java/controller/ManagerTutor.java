@@ -4,19 +4,22 @@
  */
 package controller;
 
-import dal.UserDAO;
+import dal.AdminDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+
+import model.Tutor1;
 
 /**
  *
  * @author Admin
  */
-public class EditAccount extends HttpServlet {
+public class ManagerTutor extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,18 +34,13 @@ public class EditAccount extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            String role = request.getParameter("role");
-            String name = request.getParameter("name");
-            String email = request.getParameter("email");
-            String pass = request.getParameter("pass");
-            String phone = request.getParameter("phone");
-            String gender = request.getParameter("gender");
-            String address = request.getParameter("address");
-            String image = request.getParameter("image");
-            String uid = request.getParameter("uid");
-            UserDAO udao = new UserDAO();
-            udao.editAccount(role, name, email, pass, phone, gender, address, image, uid);
-            response.sendRedirect("manageruser");
+            AdminDAO adao = new AdminDAO();
+            // Gọi phương thức lấy danh sách Tutors
+            List<Tutor1> tutorList = adao.getAllTutors();
+
+            // Gửi danh sách tutors về JSP
+            request.setAttribute("tutorList", tutorList);
+            request.getRequestDispatcher("tutormanager.jsp").forward(request, response);
         }
     }
 

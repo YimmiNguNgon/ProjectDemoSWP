@@ -11,12 +11,15 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+import model.Account;
+import model.Role;
 
 /**
  *
  * @author Admin
  */
-public class EditAccount extends HttpServlet {
+public class ManagerServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,18 +34,28 @@ public class EditAccount extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            String role = request.getParameter("role");
-            String name = request.getParameter("name");
-            String email = request.getParameter("email");
-            String pass = request.getParameter("pass");
-            String phone = request.getParameter("phone");
-            String gender = request.getParameter("gender");
-            String address = request.getParameter("address");
-            String image = request.getParameter("image");
-            String uid = request.getParameter("uid");
+
             UserDAO udao = new UserDAO();
-            udao.editAccount(role, name, email, pass, phone, gender, address, image, uid);
-            response.sendRedirect("manageruser");
+            String roleIdParam = request.getParameter("roleId");
+            List<Account> listA;
+
+            if (roleIdParam != null && !roleIdParam.isEmpty()) {
+                int roleId = Integer.parseInt(roleIdParam);
+                //fix
+                listA = udao.getAccountByRole(roleId);
+                System.out.println("Filtered by roleId: " + roleId);
+            } else {
+                listA = udao.getALLAccount();//nếu không lọc thì lấy tất cả acc
+                System.out.println("Fetching all accounts");
+            }
+
+            List<Role> listR = udao.getAllRole();
+            System.out.println("Total Accounts: " + listA.size());
+            System.out.println("Total Roles: " + listR.size());
+
+            request.setAttribute("ListA", listA);
+            request.setAttribute("ListR", listR);
+            request.getRequestDispatcher("manageruser.jsp").forward(request, response);
         }
     }
 

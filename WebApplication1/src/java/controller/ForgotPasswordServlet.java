@@ -5,21 +5,21 @@
 
 package controller;
 
+import com.sun.jdi.connect.spi.Connection;
+import dal.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import model.User;
 
 /**
  *
  * @author Huy
  */
-@WebServlet(name="logout", urlPatterns={"/logout"})
-public class LogoutServlet extends HttpServlet {
+public class ForgotPasswordServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -36,10 +36,10 @@ public class LogoutServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LogoutServlet</title>");  
+            out.println("<title>Servlet ForgotPasswordServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet LogoutServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet ForgotPasswordServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -66,14 +66,44 @@ public class LogoutServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-      HttpSession session = request.getSession(false); // Lấy session hiện tại (nếu có)
-        if (session != null) {
-            session.invalidate(); // Xóa session khi đăng xuất
+     @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String email = request.getParameter("email");
+        String newPassword = request.getParameter("newPassword");
+        String confirmPassword = request.getParameter("confirmPassword");
+
+        // Kiểm tra xem mật khẩu mới và mật khẩu xác nhận có trùng khớp không
+        if (newPassword.equals(confirmPassword)) {
+            Connection connection = null;
+            try {
+                // Lấy kết nối từ DataSource hoặc DriverManager
+//                connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/yourdb", "youruser", "yourpassword");
+//
+//                // Gọi DAL để cập nhật mật khẩu vào cơ sở dữ liệu
+//                boolean success = UserDAO.updatePassword(connection, email, newPassword);
+
+//                if (success) {
+//                    // Chuyển hướng về trang đăng nhập hoặc trang thông báo thành công
+//                    response.sendRedirect("login.jsp?status=success");
+//                } else {
+//                    response.sendRedirect("resetPasswordPage.jsp?status=error");
+//                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.sendRedirect("resetPasswordPage.jsp?status=error");
+            } finally {
+                // Đảm bảo đóng kết nối sau khi sử dụng
+                if (connection != null) {
+                    try {
+                        connection.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } else {
+            response.sendRedirect("resetPasswordPage.jsp?status=password_mismatch");
         }
-        response.sendRedirect("login.jsp"); // Chuyển hướng về trang login
     }
 
     /** 

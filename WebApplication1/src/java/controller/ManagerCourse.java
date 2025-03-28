@@ -4,19 +4,22 @@
  */
 package controller;
 
-import dal.UserDAO;
+import dal.AdminDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+import model.Course;
+import model.CourseAd;
 
 /**
  *
  * @author Admin
  */
-public class EditAccount extends HttpServlet {
+public class ManagerCourse extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,18 +34,20 @@ public class EditAccount extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            String role = request.getParameter("role");
-            String name = request.getParameter("name");
-            String email = request.getParameter("email");
-            String pass = request.getParameter("pass");
-            String phone = request.getParameter("phone");
-            String gender = request.getParameter("gender");
-            String address = request.getParameter("address");
-            String image = request.getParameter("image");
-            String uid = request.getParameter("uid");
-            UserDAO udao = new UserDAO();
-            udao.editAccount(role, name, email, pass, phone, gender, address, image, uid);
-            response.sendRedirect("manageruser");
+//            out.println("<h1>Servlet ManagerCourse đang hoạt động!</h1>");
+            //debug
+            System.out.println("Servlet ManagerCourse được gọi");
+            AdminDAO adao = new AdminDAO();
+            List<CourseAd> courseList = adao.getAllCourses();
+            // Kiểm tra dữ liệu lấy về từ DB
+            if (courseList == null) {
+                System.out.println("Lỗi: courseList = null");
+            } else {
+                System.out.println("Số lượng khóa học lấy được: " + courseList.size());
+            }
+
+            request.setAttribute("courseList", courseList);
+            request.getRequestDispatcher("coursemanager.jsp").forward(request, response);
         }
     }
 
