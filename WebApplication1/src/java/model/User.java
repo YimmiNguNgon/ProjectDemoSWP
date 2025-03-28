@@ -1,9 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
+import java.sql.*;
 /**
  *
  * @author Huy
@@ -17,11 +14,12 @@ public class User {
     private String phoneNumber;
     private String gender;
     private String address;
+    private String imageUrl;  // Thêm trường image_url
 
     public User() {
     }
 
-    public User(int id, int role, String email, String fullName, String password, String phoneNumber, String gender, String address) {
+    public User(int id, int role, String email, String fullName, String password, String phoneNumber, String gender, String address, String imageUrl) {
         this.id = id;
         this.role = role;
         this.email = email;
@@ -30,6 +28,7 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.gender = gender;
         this.address = address;
+        this.imageUrl = imageUrl;  // Khởi tạo trường image_url
     }
 
     public int getId() {
@@ -64,6 +63,10 @@ public class User {
         return address;
     }
 
+    public String getImageUrl() {  // Thêm getter cho image_url
+        return imageUrl;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -96,11 +99,12 @@ public class User {
         this.address = address;
     }
 
-    @Override
-    public String toString() {
-        return "User{" + "id=" + id + ", role=" + role + ", email=" + email + ", fullName=" + fullName + ", password=" + password + ", phoneNumber=" + phoneNumber + ", gender=" + gender + ", address=" + address + '}';
+    public void setImageUrl(String imageUrl) {  // Thêm setter cho image_url
+        this.imageUrl = imageUrl;
     }
 
-    
-    
+    @Override
+    public String toString() {
+        return "User{" + "id=" + id + ", role=" + role + ", email=" + email + ", fullName=" + fullName + ", password=" + password + ", phoneNumber=" + phoneNumber + ", gender=" + gender + ", address=" + address + ", imageUrl=" + imageUrl + '}';  // Cập nhật toString
+    }
 }

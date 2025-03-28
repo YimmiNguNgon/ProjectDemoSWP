@@ -4,28 +4,35 @@
  */
 package model;
 
+import java.sql.*;
 /**
  *
  * @author Admin
  */
 public class Account {
-     private int userId;
+    private int userId;
     private int roleId;
     private String name;
     private String email;
     private String password;
     private String phone;
+    private String gender;
+    private String address;
+    private String image;
 
     public Account() {
     }
 
-    public Account(int userId, int roleId, String name, String email, String password, String phone) {
+    public Account(int userId, int roleId, String name, String email, String password, String phone, String gender, String address, String image) {
         this.userId = userId;
         this.roleId = roleId;
         this.name = name;
         this.email = email;
         this.password = password;
         this.phone = phone;
+        this.gender = gender;
+        this.address = address;
+        this.image = image;
     }
 
     public int getUserId() {
@@ -76,10 +83,36 @@ public class Account {
         this.phone = phone;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     @Override
     public String toString() {
-        return "Account{" + "userId=" + userId + ", roleId=" + roleId + ", name=" + name + ", email=" + email + ", password=" + password + ", phone=" + phone + '}';
+        return "Account{" + "userId=" + userId + ", roleId=" + roleId + ", name=" + name + ", email=" + email + ", password=" + password + ", phone=" + phone + ", gender=" + gender + ", address=" + address + ", image=" + image + '}';
     }
+
+   
     
     
     

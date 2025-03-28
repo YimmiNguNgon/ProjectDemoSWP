@@ -3,7 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package model;
+
 import java.sql.Time;
+
 /**
  *
  * @author Huy
@@ -29,6 +31,10 @@ public class Schedule {
         this.endTime = endTime;
         this.courseName = courseName;
         this.hocSinh = hocSinh;
+    }
+
+    public Schedule() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     // Getters và Setters

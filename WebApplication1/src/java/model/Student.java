@@ -15,6 +15,8 @@ public class Student {
     private int userID;         // Khóa ngoại liên kết với bảng Users
     private int courseID;       // Khóa ngoại liên kết với bảng Courses
     private Date dateJoined;    // Thời điểm tham gia (mặc định là thời gian hiện tại)
+    private Account account;
+    private boolean Attended;
 
     public Student() {
     }
@@ -51,6 +53,22 @@ public class Student {
         this.dateJoined = dateJoined;
     }
 
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public boolean isAttended() {
+        return Attended;
+    }
+
+    public void setAttended(boolean Attended) {
+        this.Attended = Attended;
+    }
+    
     @Override
     public String toString() {
         return "Student{" + "studentID=" + studentID + ", userID=" + userID + ", courseID=" + courseID + ", dateJoined=" + dateJoined + '}';
