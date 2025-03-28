@@ -11,88 +11,59 @@
         
         <style>
             /* Reset CSS */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: Arial, sans-serif;
+            }
 
-        body {
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
-        }
+            body {
+                background-color: #f5f5f5;
+                color: #333;
+                line-height: 1.6;
+            }
 
-        .container{
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+            .container{
+                width: 90%;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
 
-        /* Header */
-
-
-        header nav ul {
-            background: #0073e6;
-            padding: 15px 0;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: center;
-            list-style: none;
-        }
-
-        header nav ul li {
-            margin: 0 15px;
-        }
-
-        header nav ul li a {
-            color: #F2F5E4;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: bold;
-            transition: color 0.3s;
-        }
-
-        header nav ul li a:hover {
-            color: #F2F5E4;
-        }
-
-        /* Hero Section */
-        .hero {
-            background: url('../images/hero-bg.jpg') no-repeat center center/cover;
-            text-align: center;
-            padding: 100px 0;
-            color: white;
-            box-shadow: inset 0px 0px 100px rgba(0, 0, 0, 0.3);
-        }
-
-        .hero h2 {
-            font-size: 36px;
-            font-weight: bold;
-            color: #222;
-        }
-
-        /* Footer */
-        footer {
-            background: #222;
-            color: white;
-            text-align: center;
-            padding: 15px 0;
-            margin-top: 30px;
-        }
-
-        @media (max-width: 768px) {
+            /* Header */
             header nav ul {
-                flex-direction: column;
-                text-align: center;
+                background: #0073e6;
+                padding: 15px 0;
+                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+                display: flex;
+                justify-content: center;
+                list-style: none;
             }
 
             header nav ul li {
-                margin-bottom: 10px;
+                margin: 0 15px;
             }
-        }
 
+            header nav ul li a {
+                color: #F2F5E4;
+                text-decoration: none;
+                font-size: 18px;
+                font-weight: bold;
+                transition: color 0.3s;
+            }
+
+            header nav ul li a:hover {
+                color: #F2F5E4;
+            }
+
+            /* Footer */
+            footer {
+                background: #222;
+                color: white;
+                text-align: center;
+                padding: 15px 0;
+                margin-top: 30px;
+            }
         </style>
     </head>
     <body>
@@ -109,26 +80,31 @@
                 </nav>
             </div>
         </header>
-       
+
         <div class="container mt-4">
             <h2 class="mb-3">Danh sách yêu cầu khóa học</h2>
+
+            <!-- Dropdown để lọc theo trạng thái -->
+            <select id="statusFilter" class="form-select mb-3" aria-label="Lọc theo trạng thái">
+                <option value="">Tất cả</option>
+                <option value="Pending">Chờ duyệt</option>
+                <option value="Accepted">Đã chấp nhận</option>
+                <option value="Rejected">Đã từ chối</option>
+            </select>
+
             <table class="table table-bordered">
                 <thead class="table-dark">
                     <tr>
-                        <th>ID Yêu cầu</th>
-                        <th>ID Học viên</th>
-                        <th>Tên Học viên</th>
+                        <th>Email học viên</th>
                         <th>Khóa học</th>
                         <th>Ngày yêu cầu</th>
                         <th>Trạng thái</th>
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="courseRequestTableBody">
                     <c:forEach var="request" items="${courseRequests}">
-                        <tr>
-                            <td>${request.requestId}</td>
-                            <td>${request.studentId}</td>
+                        <tr class="course-request" data-status="${request.status}">
                             <td>${request.user.fullName}</td>
                             <td>${request.course.courseName}</td>
                             <td>${request.requestDate}</td>
@@ -150,5 +126,22 @@
                 </tbody>
             </table>
         </div>
+
+        <script>
+            // Function to filter table rows based on the selected status
+            document.getElementById("statusFilter").addEventListener("change", function() {
+                let filterValue = this.value.toLowerCase();
+                let rows = document.querySelectorAll("#courseRequestTableBody .course-request");
+
+                rows.forEach(function(row) {
+                    let status = row.getAttribute("data-status").toLowerCase();
+                    if (filterValue === "" || status === filterValue) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            });
+        </script>
     </body>
 </html>

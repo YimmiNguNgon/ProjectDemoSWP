@@ -584,7 +584,112 @@
                             .catch(error => console.error("Lỗi khi thêm khóa học:", error));
                 });
             });
+                
+                document.querySelector("#addCourseModal form").addEventListener("submit", function (event) {
+                    event.preventDefault(); // Ngăn form submit theo cách thông thường
 
+                    // Lấy giá trị các trường từ form
+                    const courseName = document.getElementById("courseName").value;
+                    const description = document.getElementById("description").value;
+                    const level = document.getElementById("level").value;
+                    const price = document.getElementById("price").value;
+                    const totalSessions = document.getElementById("totalSessions").value;
+
+                    // Validate form
+                    if (!courseName || !description || !level || !price || !totalSessions) {
+                        alert("Vui lòng điền đầy đủ tất cả các trường!");
+                        return;
+                    }
+
+                    // Kiểm tra giá trị của giá và số buổi học
+                    if (isNaN(price) || price <= 0) {
+                        alert("Giá khóa học phải là một số dương!");
+                        return;
+                    }
+
+                    if (isNaN(totalSessions) || totalSessions <= 0) {
+                        alert("Số buổi học phải là một số nguyên dương!");
+                        return;
+                    }
+
+                    // Gửi form nếu validate thành công
+                    let formData = new FormData(this);
+                    fetch("AddCoursesServlet", {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => response.json()) // Chuyển đổi phản hồi thành JSON
+                    .then(data => {
+                        if (data.success) {
+                            // Thêm khóa học mới vào bảng hiển thị
+                            let newRow = document.createElement("tr");
+                            newRow.innerHTML =
+                                "<td>" + data.courseName + "</td>" +
+                                "<td>" + data.description + "</td>" +
+                                "<td>" + data.level + "</td>" +
+                                "<td>" + data.price + "</td>" +
+                                "<td>" + data.totalSessions + "</td>" +
+                                "<td>" +
+                                "<a href='editCourse.jsp?courseID=" + data.courseID + "' class='edit-btn'>Chỉnh Sửa</a>" +
+                                "<a href='deleteCourseServlet?courseID=" + data.courseID + "' class='delete-btn' onclick='return confirm(\"Bạn có chắc muốn xóa?\");'>Xóa</a>" +
+                                "</td>";
+                            document.querySelector("tbody").appendChild(newRow);
+
+                            // Ẩn modal sau khi thêm thành công
+                            document.getElementById("addCourseModal").style.display = "none";
+                            location.reload();
+                            // Reset form
+                            document.querySelector("#addCourseModal form").reset();
+                        } else {
+                            alert("Thêm khóa học thất bại!");
+                        }
+                    })
+                    .catch(error => console.error("Lỗi khi thêm khóa học:", error));
+                });
+
+                            document.getElementById("editCourseForm").addEventListener("submit", function (event) {
+                    event.preventDefault(); // Ngăn form submit theo cách thông thường
+
+                    // Lấy giá trị các trường từ form
+                    const courseName = document.getElementById("courseEditName").value;
+                    const description = document.getElementById("descriptionEdit").value;
+                    const level = document.getElementById("levelEdit").value;
+                    const price = document.getElementById("priceEdit").value;
+                    const totalSessions = document.getElementById("totalSessionsEdit").value;
+
+                    // Validate form
+                    if (!courseName || !description || !level || !price || !totalSessions) {
+                        alert("Vui lòng điền đầy đủ tất cả các trường!");
+                        return;
+                    }
+
+                    // Kiểm tra giá trị của giá và số buổi học
+                    if (isNaN(price) || price <= 0) {
+                        alert("Giá khóa học phải là một số dương!");
+                        return;
+                    }
+
+                    if (isNaN(totalSessions) || totalSessions <= 0) {
+                        alert("Số buổi học phải là một số nguyên dương!");
+                        return;
+                    }
+
+                    // Gửi form nếu validate thành công
+                    let formData = new FormData(this);
+                    fetch("editcourseservlet", {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => response.json()) // Giả sử bạn nhận về kết quả dưới dạng JSON
+                    .then(data => {
+                        alert("Cập nhật khóa học thành công!");
+                        location.reload(); // Tải lại trang (hoặc cập nhật danh sách mà không tải lại)
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert("Có lỗi xảy ra!");
+                    });
+                });
         </script>
         <script>
             function deleteCourse(courseID) {
