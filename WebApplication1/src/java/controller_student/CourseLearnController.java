@@ -36,7 +36,6 @@ public class CourseLearnController extends HttpServlet {
 
         CourseDAO courseDAO = new CourseDAO();
         List<Course> courses = courseDAO.getCoursesByUserIdReview(userId);
-
         request.setAttribute("courses", courses);
         request.getRequestDispatcher("studentCourses.jsp").forward(request, response);
     }

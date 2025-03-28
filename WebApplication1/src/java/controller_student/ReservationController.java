@@ -4,6 +4,7 @@
  */
 package controller_student;
 
+import dal.CourseDAO;
 import dal.CourseRequestDAO;
 import dal.ScheduleDAO;
 import dal.TutorDAO;
@@ -18,7 +19,10 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.sql.*;
 import java.time.LocalDate;
+import model.Course;
 import model.CourseRequest;
+import model.Courses;
+import model.PaymentInfo;
 import model.Tutor;
 import model.User;
 
@@ -41,7 +45,7 @@ public class ReservationController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+        try ( PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
@@ -81,6 +85,7 @@ public class ReservationController extends HttpServlet {
             }
             int userId = user.getId();
             CourseRequestDAO courseRequestDao = new CourseRequestDAO();
+            CourseDAO courseDAO = new CourseDAO();
             String courseIdParam = request.getParameter("courseId");
             int tutorId = Integer.parseInt(request.getParameter("tutorId"));
             String dayOfWeek = request.getParameter("dayOfWeek");
@@ -105,27 +110,19 @@ public class ReservationController extends HttpServlet {
 
             request.setAttribute("courseId", courseId);
             request.setAttribute("tutors", tutors);
-            if(courseRequestDao.isJoin(userId, courseId)) {
-                 request.setAttribute("errorMessage", "Bạn đã join khóa học này rồi");
-            }else
-            if (scheduleDAO.isScheduleConflict(tutorId, dayOfWeek, startTime, endTime)) {
+            if (courseRequestDao.isJoin(userId, courseId)) {
+                request.setAttribute("errorMessage", "Bạn đã join khóa học này rồi");
+            } else if (scheduleDAO.isScheduleConflict(tutorId, dayOfWeek, startTime, endTime)) {
                 request.setAttribute("errorMessage", "Gia sư này đã có lịch học vào thời gian này!");
             } else {
-                int studentId = courseRequestDao.addStudent(userId, courseId);
-                if (studentId > 0) {
-                    boolean isAdd = courseRequestDao.addCourseRequest(userId, tutorId, courseId);
-                    if (isAdd) {
-                        scheduleDAO.createSchedule(tutorId, studentId, dayOfWeek, startTime, endTime);
-                        request.setAttribute("successMessage", "Đặt lịch thành công!");
-                    } else {
-                        request.setAttribute("errorMessage", "Đặt lịch thất bại thử lại ngay!");
-                    }
-                } else {
-                    request.setAttribute("errorMessage", "Đặt lịch thất bại thử lại ngay!");
-                }
+                Courses course = courseDAO.getCourseById(courseId);
+                session.setAttribute("paymentInfo", new PaymentInfo(userId, tutorId, courseId, dayOfWeek, startTime, endTime));
+                double total = course.getPrice();
+                long totalLong = (long) total;
+                response.sendRedirect("PaymentServlet?total=" + totalLong);
+                return;
             }
             request.getRequestDispatcher("reservation.jsp").forward(request, response);
-
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "Lỗi xử lý yêu cầu!");
@@ -134,3 +131,17 @@ public class ReservationController extends HttpServlet {
     }
 
 }
+
+//            if (courseRequestDao.isJoin(userId, courseId)) {
+//                request.setAttribute("errorMessage", "Bạn đã join khóa học này rồi");
+//            } else if (scheduleDAO.isScheduleConflict(tutorId, dayOfWeek, startTime, endTime)) {
+//                request.setAttribute("errorMessage", "Gia sư này đã có lịch học vào thời gian này!");
+//            } else {
+//                Courses course = courseDAO.getCourseById(courseId);
+//                session.setAttribute("paymentInfo", new PaymentInfo(userId, tutorId, courseId, dayOfWeek, startTime, endTime));
+//                double total = course.getPrice();
+//                long totalLong = (long) total;
+//                response.sendRedirect("PaymentServlet?total=" + totalLong);
+//                return;
+//            }
+//            request.getRequestDispatcher("reservation.jsp").forward(request, response);
