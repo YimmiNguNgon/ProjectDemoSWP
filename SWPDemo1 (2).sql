@@ -18,7 +18,8 @@ CREATE TABLE Users (
 	FOREIGN KEY (role_id) REFERENCES Role(role_id) 
 );
 DELETE FROM Users;
-
+ALTER TABLE [SWPDemo1].[dbo].[Users]
+ADD reset_token NVARCHAR(255) NULL;
 -- Thêm dữ liệu vào bảng Users
 -- Thêm dữ liệu hợp lệ vào bảng Users
 -- Thêm dữ liệu hợp lệ vào bảng Users

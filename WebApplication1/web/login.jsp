@@ -10,71 +10,151 @@
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <style>
             /* General Styles */
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                font-family: 'Arial', sans-serif;
-            }
-            body {
-                background-color: #f8f9fa;
-            }
-            /* Header Container */
-            .header-container {
-                width: 100%;
-                background: linear-gradient(to right, #ff66b2, #ff99cc); /* Gradient background */
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Mượt mà hơn */
-                padding: 1rem 0;
-            }
-            /* Header styling */
-            .header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                max-width: 1200px;
-                margin: 0 auto;
-                padding: 0 2rem;
-            }
-            /* Logo styling */
-            .logo {
-                font-size: 1.8rem;
-                font-weight: bold;
-                color: white;
-                text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-                transition: transform 0.3s ease;
-                text-decoration: none; /* Bỏ gạch chân cho logo */
-            }
-            .logo:hover {
-                transform: scale(1.1);
-            }
-            /* Authentication Controls */
-            .auth-controls {
-                display: flex;
-                align-items: center;
-                gap: 1.2rem;
-                font-size: 1rem;
-                color: white;
-            }
-            .auth-controls span {
-                font-size: 1.2rem;
-                font-weight: bold;
-            }
-            /* Login Button */
-            .login-button {
-                background-color: white;
-                border: 2px solid white;
-                color: #ff66b2;
-                padding: 0.6rem 1.2rem;
-                font-size: 1rem;
-                border-radius: 20px;
-                cursor: pointer;
-                transition: all 0.3s ease-in-out;
-            }
-            .login-button:hover {
-                background-color: #ff66b2;
-                color: white;
-                transform: translateY(-3px);
-            }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+body {
+    background-color: #f8f9fa;
+}
+
+/* Header Container */
+.header-container {
+    width: 100%;
+    background: linear-gradient(to right, #4a6fa5, #6b8cae); /* Gradient xanh dương */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1rem 0;
+}
+
+/* Form Styles - New Color Scheme */
+#loginForm {
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(74, 111, 165, 0.15); /* Shadow màu xanh nhạt */
+    border: 1px solid #e1e8ed;
+}
+
+/* Input Fields */
+.form-control {
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-size: 1rem;
+    border: 1px solid #d1d9e6;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #4a6fa5;
+    box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
+}
+
+/* Labels */
+#loginForm label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4a6fa5; /* Màu xanh đậm */
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Buttons */
+.btn-login {
+    background-color: #4a6fa5;
+    color: white;
+    padding: 14px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-login:hover {
+    background-color: #3a5a8f;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 111, 165, 0.3);
+}
+
+/* Links */
+.text-start a, 
+.text-center p a {
+    color: #4a6fa5;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.text-start a:hover, 
+.text-center p a:hover {
+    color: #3a5a8f;
+    text-decoration: underline;
+}
+
+/* Password Toggle */
+.password-toggle i {
+    color: #4a6fa5;
+}
+
+/* Separator */
+.separator hr {
+    border-color: #e1e8ed;
+}
+
+.text-or {
+    color: #6b8cae;
+}
+
+/* Social Buttons */
+.social-login .btn {
+    border-color: #e1e8ed;
+    color: #4a6fa5;
+}
+
+.social-login .btn:hover {
+    background-color: #f5f8fa;
+    border-color: #d1d9e6;
+}
+
+/* Remember Me Checkbox */
+.form-check-input:checked {
+    background-color: #4a6fa5;
+    border-color: #4a6fa5;
+}
+
+/* Error Messages */
+.alert {
+    background-color: #fff3f3;
+    border-color: #ffd6d6;
+    color: #d32f2f;
+}
+
+/* Header Elements */
+.logo {
+    color: white;
+}
+
+.auth-controls {
+    color: white;
+}
+
+.login-button {
+    background-color: white;
+    color: #4a6fa5;
+    border: 2px solid white;
+}
+
+.login-button:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #3a5a8f;
+}
             a {
                 text-decoration: none;
             }
@@ -292,30 +372,42 @@ h2.text-center {
     <div class="form-container sign-in-container">
         <div class="form">
             <h2 class="text-center fw-bold">Đăng Nhập</h2>
-            <form action="login" method="post" id="loginForm" onsubmit="return validateLoginForm()">
+<!--            <p class="text-center">
+                <a href="signupstudent.jsp" class="text-center-student">Sign up as a student</a>
+                <a href="signuptutor.jsp" class="text-center-student">Sign up as a tutor</a>
+            </p>-->
+<!--            <div class="social-login">
+                <button class="btn btn-outline-dark w-100 d-flex align-items-center justify-content-center">
+                    <i class="fab fa-google me-2"></i> Continue with Google
+                </button>
+            </div>
+            <div class="separator d-flex align-items-center my-3">
+                <hr class="flex-grow-1">
+                <span class="mx-2 text-or">or</span>
+                <hr class="flex-grow-1">
+            </div>-->
+            <form action="login" method="post" id="loginForm">
                 <div class="mb-3 text-start">
                     <label>Email</label>
-                    <input type="email" class="form-control" name="email" placeholder="Your email" required id="loginEmail">
-                    <div id="loginEmailError" class="text-danger" style="display:none;">Please enter a valid email address.</div>
+                    <input type="email" class="form-control" name="email" placeholder="Your email" required>
                 </div>
                 <div class="mb-3 text-start">
-                    <label>Password</label>
+                    <label>Mật khẩu</label>
                     <div class="input-group">
                         <input type="password" class="form-control" name="password" id="loginPassword" placeholder="Your password" required>
                         <div class="input-group-text password-toggle" onclick="togglePassword('loginPassword')">
                             <i class="fas fa-eye"></i>
                         </div>
                     </div>
-                    <div id="loginPasswordError" class="text-danger" style="display:none;">Please enter your password.</div>
                 </div>
                 <div class="d-flex justify-content-between align-items-center">
-                    <a href="forgotpassword.jsp" class="text-decoration-none">Forgot your password?</a>
+                    <a href="forgotpassword.jsp" class="text-decoration-none">Quên mật khẩu ?</a>
                 </div>
                 <div class="form-check my-3 text-start">
                     <input type="checkbox" class="form-check-input" id="rememberMe">
                     <label class="form-check-label" for="rememberMe">Remember me</label>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Log in</button>
+                <button type="submit" class="btn btn-primary w-100">Đăng Nhập</button>
                 <c:if test="${not empty error}">
                     <div class="alert alert-danger mt-3">${error}</div>
                 </c:if>
@@ -326,37 +418,40 @@ h2.text-center {
     <!-- Sign Up Form -->
     <div class="form-container sign-up-container">
         <div class="form">
-            <h2 class="text-center fw-bold">Sign Up</h2>
+            <h2 class="text-center fw-bold">Đăng Nhập</h2>
+            
             <p class="text-center">
-                Already have an account? <a href="#" onclick="toggleSignUp()">Log in</a>
+                Bạn đã có tài khoản ? <a href="#" onclick="toggleSignUp()">Đăng nhập</a>
             </p>
-            <form action="registerServlet" method="post" onsubmit="return validateSignUpForm()">
+            <p class="text-center">
+                <a href="signupstudent.jsp" class="text-center-student">Đăng kí Học Sinh</a>
+                <a href="signuptutor.jsp" class="text-center-student">Đăng kí Gia Sư</a>
+            </p>
+            <form action="registerServlet" method="post">
+<!--                <div class="mb-3 text-start">
+                    <label>Full Name</label>
+                    <input type="text" class="form-control" name="fullname" placeholder="Your full name" required>
+                </div>
                 <div class="mb-3 text-start">
                     <label>Email</label>
-                    <input type="email" class="form-control" name="email" placeholder="Your email" required id="signupEmail">
-                    <div id="signupEmailError" class="text-danger" style="display:none;">Please enter a valid email address.</div>
+                    <input type="email" class="form-control" name="email" placeholder="Your email" required>
                 </div>
+
                 <div class="mb-3 text-start">
                     <label>Password</label>
                     <div class="input-group">
-                        <input type="password" class="form-control" name="password" id="signupPassword" placeholder="Your password" required>
-                        <div class="input-group-text password-toggle" onclick="togglePassword('signupPassword')">
+                        <input type="password" class="form-control" name="password" placeholder="Your password" required>
+                        <div class="input-group-text password-toggle">
                             <i class="fas fa-eye"></i>
                         </div>
                     </div>
-                    <div id="signupPasswordError" class="text-danger" style="display:none;">Please enter your password.</div>
-                </div>
-                <div class="mb-3 text-start">
-                    <label>Confirm Password</label>
-                    <div class="input-group">
-                        <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Confirm password" required>
-                        <div class="input-group-text password-toggle" onclick="togglePassword('confirmPassword')">
-                            <i class="fas fa-eye"></i>
-                        </div>
-                    </div>
-                    <div id="confirmPasswordError" class="text-danger" style="display:none;">Passwords do not match.</div>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+                </div>-->
+
+<!--                <div class="d-flex justify-content-between align-items-center">
+                    <a href="#" class="forgot-password">Forgot your password?</a>
+                </div>-->
+
+<!--                <button type="submit" class="btn-login">Sign Up</button>-->
             </form>
         </div>
     </div>
@@ -365,9 +460,9 @@ h2.text-center {
     <div class="overlay-container" id="overlayContainer">
         <div class="overlay">
             <div class="text-wrapper">
-                <h2 id="overlayTitle">Hello, Friend!</h2>
-                <p id="overlayText">Enter your details and start your journey with us.</p>
-                <button class="btn btn-outline-light" onclick="toggleSignUp()">Sign Up</button>
+                <h2 id="overlayTitle">Xin chàooooo !</h2>
+                <p id="overlayText">Nhập thông tin của bạn và bắt đầu hành trình cùng EduOnline</p>
+                <button class="btn btn-outline-light" onclick="toggleSignUp()">Đăng Kí</button>
             </div>
         </div>
     </div>
@@ -379,11 +474,11 @@ h2.text-center {
     function toggleSignUp() {
         document.getElementById("loginContainer").classList.toggle("right-panel-active");
         if (document.getElementById("loginContainer").classList.contains("right-panel-active")) {
-            document.getElementById("overlayTitle").innerText = "Welcome Back!";
-            document.getElementById("overlayText").innerText = "If you already have an account, log in now.";
+            document.getElementById("overlayTitle").innerText = "Chào mừng bạn đã quay trở lại!";
+            document.getElementById("overlayText").innerText = "";
         } else {
-            document.getElementById("overlayTitle").innerText = "Hello, Friend!";
-            document.getElementById("overlayText").innerText = "Enter your details and start your journey with us.";
+            document.getElementById("overlayTitle").innerText = "Xin chàooooo !";
+            document.getElementById("overlayText").innerText = "Nhập thông tin của bạn và bắt đầu hành trình cùng EduOnline";
         }
     }
 
@@ -398,67 +493,7 @@ h2.text-center {
             icon.classList.replace("fa-eye-slash", "fa-eye");
         }
     }
-
-    function validateLoginForm() {
-        let email = document.getElementById("loginEmail").value;
-        let password = document.getElementById("loginPassword").value;
-        let valid = true;
-
-        // Validate email format
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailPattern.test(email)) {
-            document.getElementById("loginEmailError").style.display = "block";
-            valid = false;
-        } else {
-            document.getElementById("loginEmailError").style.display = "none";
-        }
-
-        // Validate password
-        if (password === "") {
-            document.getElementById("loginPasswordError").style.display = "block";
-            valid = false;
-        } else {
-            document.getElementById("loginPasswordError").style.display = "none";
-        }
-
-        return valid;
-    }
-
-    function validateSignUpForm() {
-        let email = document.getElementById("signupEmail").value;
-        let password = document.getElementById("signupPassword").value;
-        let confirmPassword = document.getElementById("confirmPassword").value;
-        let valid = true;
-
-        // Validate email format
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailPattern.test(email)) {
-            document.getElementById("signupEmailError").style.display = "block";
-            valid = false;
-        } else {
-            document.getElementById("signupEmailError").style.display = "none";
-        }
-
-        // Validate password
-        if (password === "") {
-            document.getElementById("signupPasswordError").style.display = "block";
-            valid = false;
-        } else {
-            document.getElementById("signupPasswordError").style.display = "none";
-        }
-
-        // Validate password confirmation
-        if (password !== confirmPassword) {
-            document.getElementById("confirmPasswordError").style.display = "block";
-            valid = false;
-        } else {
-            document.getElementById("confirmPasswordError").style.display = "none";
-        }
-
-        return valid;
-    }
 </script>
-
 <script src="resources/script/jquery-3.7.1.min.js"></script>
 
 </body>

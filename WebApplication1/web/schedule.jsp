@@ -150,7 +150,33 @@
                 border: 1px solid #ddd;
                 text-align: center;
             }
+html, body {
+    height: 100%;
+    margin: 0;
+}
 
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Sử dụng viewport height */
+}
+
+.container_header {
+    flex-shrink: 0;
+}
+
+.schedule {
+    flex: 1; /* Chiếm phần không gian còn lại */
+    padding-bottom: 20px; /* Thêm khoảng cách trước footer */
+}
+
+footer {
+    flex-shrink: 0;
+    background: #222;
+    color: white;
+    padding: 15px 0;
+    margin-top: auto; /* Đẩy footer xuống dưới cùng */
+}
         </style>
     </head>
     <body>
@@ -208,7 +234,7 @@
             </div>
         </section>
 
-        <jsp:include page="footer.jsp"/>
+        
 
         <script>
             // Lọc lịch dạy theo ngày
@@ -226,5 +252,6 @@
                 });
             });
         </script>
+        <jsp:include page="footer.jsp"/>
     </body>
 </html>

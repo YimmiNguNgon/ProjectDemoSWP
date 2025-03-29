@@ -40,7 +40,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary">Lưu Đánh Giá</button>
-                
+                <button onclick="window.history.back()" class="btn btn-secondary">Quay lại</button>
             </form>
         </div>
     </body>

@@ -11,7 +11,7 @@
     <div class="container mt-5">
         <h2 class="text-success">Cảm ơn bạn đã đánh giá buổi học!</h2>
         <p>Bạn đã hoàn thành việc đánh giá. Chúng tôi rất trân trọng ý kiến đóng góp của bạn.</p>
-        
+        <button onclick="window.history.back()" class="btn btn-secondary">Quay lại</button>
     </div>
 </body>
 </html>

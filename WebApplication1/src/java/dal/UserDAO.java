@@ -506,4 +506,84 @@ public class UserDAO extends DBContext {
         }
     }
 
+   // Lưu token khôi phục mật khẩu
+    public void saveResetToken(String email, String token) {
+        String sql = "UPDATE Users SET reset_token = ? WHERE Email = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, token);
+            ps.setString(2, email);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Lấy email dựa trên token
+    public String getEmailByResetToken(String token) {
+        String sql = "SELECT Email FROM Users WHERE reset_token = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, token);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("Email");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Kiểm tra token có hợp lệ không
+    public boolean isValidResetToken(String email, String token) {
+        String sql = "SELECT * FROM Users WHERE Email = ? AND reset_token = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ps.setString(2, token);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Cập nhật mật khẩu
+    public void updatePassword(String email, String newPassword) {
+        String sql = "UPDATE Users SET Password = ? WHERE Email = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, newPassword); 
+            ps.setString(2, email);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Xóa token sau khi sử dụng
+    public void clearResetToken(String email) {
+        String sql = "UPDATE Users SET reset_token = NULL WHERE Email = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Phương thức hỗ trợ để trích xuất thông tin User từ ResultSet
+    private User extractUser(ResultSet rs) throws SQLException {
+        return new User(
+                rs.getInt("UserID"),
+                rs.getInt("role_id"),
+                rs.getString("Email"),
+                rs.getString("Name"),
+                rs.getString("Password"),
+                rs.getString("Phone"),
+                rs.getString("Gender"),
+                rs.getString("Address"),
+                rs.getString("image_url")
+        );
+    }
 }

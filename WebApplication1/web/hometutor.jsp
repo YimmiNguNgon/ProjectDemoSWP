@@ -1,5 +1,4 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -66,7 +65,35 @@
             padding: 15px 0;
             margin-top: 30px;
         }
+        .hero {
+    background: linear-gradient(to right, #0000, #0000); /* Gradient màu xanh dương */
+    color: black; /* Màu chữ trắng */
+    padding: 50px 0; /* Padding cho phần trên và dưới */
+    text-align: center; /* Căn giữa chữ */
+    margin-top: 30px; /* Khoảng cách giữa các phần */
+}
+.hero1 {
+    background: linear-gradient(to right, #0000, #0000); /* Gradient màu xanh dương */
+    color: white; /* Màu chữ trắng */
+    padding: 50px 0; /* Padding cho phần trên và dưới */
+    text-align: center; /* Căn giữa chữ */
+    margin-top: 30px; /* Khoảng cách giữa các phần */
 
+.hero h2 {
+    font-size: 2rem; /* Kích thước chữ lớn */
+    font-weight: bold; /* Làm đậm chữ */
+    text-transform: uppercase; /* Chữ hoa */
+    letter-spacing: 2px; /* Khoảng cách giữa các chữ */
+}
+
+.hero .container {
+    max-width: 1200px; /* Đảm bảo phần chứa không quá rộng */
+    margin: 0 auto; /* Căn giữa phần chứa */
+}
+
+/* Responsive Design cho Hero */
+
+}
         @media (max-width: 768px) {
             header nav ul {
                 flex-direction: column;
@@ -76,6 +103,8 @@
             header nav ul li {
                 margin-bottom: 10px;
             }
+            .hero h2 {
+        font-size: 1.5rem; /* Giảm kích thước chữ khi màn hình nhỏ */
         }
 
         </style>
@@ -89,7 +118,10 @@
                         <li><a href="hometutor.jsp">Trang Chủ</a></li>
                         <li><a href="ProfileTuTorServlet">Thông Tin Cá Nhân</a></li>
                         <li><a href="tutorcoursesservlet">Khóa Học</a></li>
+                        <li><a href="ManageReservation">Đặt lịch</a></li>
                         <li><a href="scheduleservlet">Lịch Dạy</a></li>
+                        
+
                     </ul>
                 </nav>
             </div>
@@ -101,7 +133,13 @@
                 
             </div>
         </section>
-       
+        <section class="hero1">
+            <div class="container">
+                <h2>Chào mừng đến với trang quản lý gia sư</h2>
+                
+            </div>
+        </section>
+
         <%@ include file="footer.jsp" %>
     </body>
 </html>

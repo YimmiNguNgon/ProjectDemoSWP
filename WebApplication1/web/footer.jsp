@@ -84,6 +84,7 @@
     color: #66ffcc;
 }
 
+
 @media (max-width: 768px) {
     .footer-container {
         flex-direction: column;

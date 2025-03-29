@@ -1,12 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
     <servlet>
+        <servlet-name>historyenroll</servlet-name>
+        <servlet-class>controller_student.HistoryEnroll</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>forgotpasswordservlet</servlet-name>
+        <servlet-class>controller.ForgotPasswordServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>scheduleadminservlet</servlet-name>
+        <servlet-class>controller.ScheduleAdminServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>userInfo</servlet-name>
+        <url-pattern>/userInfo</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditStudentProfileServlet</servlet-name>
+        <url-pattern>/editStudentProfileServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>historyenroll</servlet-name>
+        <url-pattern>/historyenroll</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>forgotpasswordservlet</servlet-name>
+        <url-pattern>/forgotpasswordservlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>scheduleadminservlet</servlet-name>
+        <url-pattern>/scheduleadminservlet</url-pattern>
+    </servlet-mapping>
+    <welcome-file-list>
+        <welcome-file>login.jsp</welcome-file>
+    </welcome-file-list>
+    <servlet>
         <servlet-name>profiletutordetail</servlet-name>
         <servlet-class>controller_tutor.ProfileTutorDetailServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>scheduleservlet</servlet-name>
         <servlet-class>controller_tutor.ScheduleServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TutorListServlet</servlet-name>
+        <servlet-class>controller_tutor.TutorListServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>addscheduleservlet</servlet-name>
@@ -23,6 +62,82 @@
     <servlet>
         <servlet-name>editcourseservlet</servlet-name>
         <servlet-class>controller_tutor.EditCourseServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ManagerServlet</servlet-name>
+        <servlet-class>controller.ManagerServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteAccount</servlet-name>
+        <servlet-class>controller.DeleteAccount</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddAccount</servlet-name>
+        <servlet-class>controller.AddAccount</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ManagerPaymentServlet</servlet-name>
+        <servlet-class>controller.ManagerPaymentServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>userInfo</servlet-name>
+        <servlet-class>controller_student.UserInfoServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditStudentProfileServlet</servlet-name>
+        <servlet-class>controller_student.EditStudentProfileServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ManagerPaymentServlet</servlet-name>
+        <url-pattern>/ManagerPayment</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>AddServlet</servlet-name>
+        <servlet-class>controller.AddServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LoadAccount</servlet-name>
+        <servlet-class>controller.LoadAccount</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditAccount</servlet-name>
+        <servlet-class>controller.EditAccount</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>BookingServlet</servlet-name>
+        <servlet-class>controller_tutor.BookingServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>FeedbackServlet</servlet-name>
+        <servlet-class>controller_tutor.FeedbackServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>deletecourseservlet</servlet-name>
+        <servlet-class>controller_tutor.DeleteCourseServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EncryptionServlet</servlet-name>
+        <servlet-class>controller.EncryptionServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>markattendanceservlet</servlet-name>
+        <servlet-class>controller_tutor.MarkAttendanceServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TutorDetailController</servlet-name>
+        <servlet-class>controller_student.TutorDetailController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RegisterController</servlet-name>
+        <servlet-class>controller.RegisterController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ManagerTutor</servlet-name>
+        <servlet-class>controller.ManagerTutor</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ManagerCourse</servlet-name>
+        <servlet-class>controller.ManagerCourse</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>profiletutordetail</servlet-name>
@@ -64,4 +179,92 @@
         <servlet-name>editcourseservlet</servlet-name>
         <url-pattern>/editcourseservlet</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ManagerServlet</servlet-name>
+        <url-pattern>/manager</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteAccount</servlet-name>
+        <url-pattern>/deleteaccount</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddAccount</servlet-name>
+        <url-pattern>/AddAccount</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddServlet</servlet-name>
+        <url-pattern>/addaccount</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoadAccount</servlet-name>
+        <url-pattern>/loadaccount</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditAccount</servlet-name>
+        <url-pattern>/editaccount</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FeedbackServlet</servlet-name>
+        <url-pattern>/FeedbackServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TutorListServlet</servlet-name>
+        <url-pattern>/tutors</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>deletecourseservlet</servlet-name>
+        <url-pattern>/deletecourseservlet</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>controller.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/LogoutServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EncryptionServlet</servlet-name>
+        <url-pattern>/EncryptionServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>markattendanceservlet</servlet-name>
+        <url-pattern>/markattendanceservlet</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>TutorListForUsersServlet</servlet-name>
+        <servlet-class>controller_student.TutorListForUsersServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TutorListForUsersServlet</servlet-name>
+        <url-pattern>/TutorListForUsersServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TutorDetailController</servlet-name>
+        <url-pattern>/TutorDetailController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RegisterController</servlet-name>
+        <url-pattern>/register</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ManagerServlet</servlet-name>
+        <url-pattern>/manageruser</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ManagerTutor</servlet-name>
+        <url-pattern>/managertutor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ManagerCourse</servlet-name>
+        <url-pattern>/managercourse</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ApproveTutor</servlet-name>
+        <url-pattern>/approveTutor</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ApproveTutor</servlet-name>
+        <servlet-class>controller.ApproveTutor</servlet-class>
+    </servlet>
 </web-app>

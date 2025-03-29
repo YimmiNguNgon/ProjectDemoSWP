@@ -17,27 +17,23 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Khóa học</th>
-                    <th>Buổi học</th>
-                    <th>Ngày</th>
+                    <th>Buổi</th>
                     <th>Thao tác</th>
                 </tr>
             </thead>
             <tbody>
                 <c:forEach var="session" items="${attendedSessions}">
                     <tr>
-                        <td>${session.sessionId}</td>
-                        <td>${session.courseId}</td>
                         <td>${session.sessionNumber}</td>
                         <td>${session.sessionDate}</td>
                         <td>
-                            <a href="SessionReviewController?sessionId=${session.sessionId}&studentId=${studentId}" class="btn btn-primary">Review</a>
+                            <a href="SessionReviewController?sessionId=${session.sessionId}&studentId=${studentId}" class="btn btn-primary">Đánh giá</a>
                         </td>
                     </tr>
                 </c:forEach>
             </tbody>
         </table>
+        <button onclick="window.history.back()" class="btn btn-secondary">Quay lại</button>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>

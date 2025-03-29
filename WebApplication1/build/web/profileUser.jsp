@@ -109,7 +109,7 @@
 
     <!-- Start profile section -->
     <div class="container profile">
-        <h2>Thông Tin Người Dùng</h2>
+        <h2>Thông Tin Sinh Viên</h2>
         <div class="row">
             <!-- Left column for student information -->
             <div class="col-md-6">

@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Course;
 import model.CourseAd;
+import model.Schedule;
+import model.Schedule1;
 import model.Tutor;
 import model.Tutor1;
 import model.Tutor2;
@@ -206,6 +208,28 @@ public class AdminDAO extends DBContext {
         }
         return courses;
     }
+    
+    // Lấy tất cả lịch học với thông tin mở rộng
+    public List<Schedule1> getAllSchedules() throws SQLException {
+    List<Schedule1> schedules = new ArrayList<>();
+    String sql = "SELECT * FROM Schedules"; // Chỉ lấy dữ liệu từ bảng Schedules
+    
+    try (PreparedStatement stmt = connection.prepareStatement(sql);
+         ResultSet rs = stmt.executeQuery()) {
+        
+        while (rs.next()) {
+            Schedule1 schedule = new Schedule1();
+            schedule.setScheduleID(rs.getInt("ScheduleID"));
+            schedule.setTutorID(rs.getInt("TutorID"));
+            schedule.setStudentID(rs.getInt("StudentID"));
+            schedule.setDayOfWeek(rs.getString("DayOfWeek"));
+            schedule.setStartTime(rs.getTime("StartTime"));
+            schedule.setEndTime(rs.getTime("EndTime"));
+            schedules.add(schedule); // Thêm đối tượng Schedule1 vào danh sách
+        }
+    }
+    return schedules;
+}
 
     //lấy dữ liệu bảng payment
     public static void main(String[] args) {

@@ -56,6 +56,7 @@
         </style>
     </head>
     <body>
+        
         <div class="container mt-5">
             <h2>Điểm danh học viên cho khóa học</h2>
             <form action="MarkAttendanceController" method="POST">
@@ -91,6 +92,7 @@
                 <div class="form-group">
                     <button type="submit" class="btn btn-submit">Lưu điểm danh</button>
                 </div>
+                 <button onclick="window.history.back()" class="btn btn-secondary">Quay lại</button>
             </form>
         </div>
 
