@@ -21,7 +21,6 @@ public class TutorDAO extends DBContext {
 
     PreparedStatement ps = null;
     ResultSet rs = null;
-    
 
     // Lấy thông tin gia sư từ UserID, bao gồm cả image_url
     public Tutor getTutorByUserId(int userId) {
@@ -33,7 +32,7 @@ public class TutorDAO extends DBContext {
                 + "    U.Phone, \n"
                 + "    U.Gender, \n"
                 + "    U.Address, \n"
-                + "    U.image_url, \n"  // Lấy image_url từ bảng Users
+                + "    U.image_url, \n" // Lấy image_url từ bảng Users
                 + "    T.Education, \n"
                 + "    T.Experience, \n"
                 + "    T.HourlyRate, \n"
@@ -41,7 +40,7 @@ public class TutorDAO extends DBContext {
                 + "FROM Tutors T\n"
                 + "JOIN Users U ON T.UserID = U.UserID WHERE U.UserID=?;";
 
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try ( PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
 
@@ -58,15 +57,15 @@ public class TutorDAO extends DBContext {
                         rs.getString("Experience"),
                         rs.getDouble("HourlyRate"),
                         rs.getBoolean("Verified"),
-                        rs.getString("image_url")  // Lấy giá trị image_url
+                        rs.getString("image_url") // Lấy giá trị image_url
                 );
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
-    }    
-    
+    }
+
     public List<Tutor> getTutorsByCourseId(int courseId) {
         List<Tutor> tutors = new ArrayList<>();
         String sql = "SELECT t.*, u.* FROM Tutors t "
@@ -74,14 +73,14 @@ public class TutorDAO extends DBContext {
                 + "JOIN Users U ON T.UserID = U.UserID "
                 + "WHERE tc.CourseID = ?";
 
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try ( PreparedStatement ps = connection.prepareStatement(sql)) {
 
             ps.setInt(1, courseId);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
                 Tutor tutor = new Tutor(
-                         rs.getInt("TutorID"),
+                        rs.getInt("TutorID"),
                         rs.getInt("UserID"),
                         rs.getString("Name"),
                         rs.getString("Email"),
@@ -102,7 +101,7 @@ public class TutorDAO extends DBContext {
 
         return tutors;
     }
-    
+
     // Lấy thông tin gia sư từ TutorID, bao gồm cả image_url
     public Tutor getTutorById(int Id) {
         String sql = "SELECT \n"
@@ -113,7 +112,7 @@ public class TutorDAO extends DBContext {
                 + "    U.Phone, \n"
                 + "    U.Gender, \n"
                 + "    U.Address, \n"
-                + "    U.image_url, \n"  // Lấy image_url từ bảng Users
+                + "    U.image_url, \n" // Lấy image_url từ bảng Users
                 + "    T.Education, \n"
                 + "    T.Experience, \n"
                 + "    T.HourlyRate, \n"
@@ -121,7 +120,7 @@ public class TutorDAO extends DBContext {
                 + "FROM Tutors T\n"
                 + "JOIN Users U ON T.UserID = U.UserID WHERE U.TutorID=?;";
 
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try ( PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, Id);
             ResultSet rs = ps.executeQuery();
 
@@ -138,7 +137,7 @@ public class TutorDAO extends DBContext {
                         rs.getString("Experience"),
                         rs.getDouble("HourlyRate"),
                         rs.getBoolean("Verified"),
-                        rs.getString("image_url")  // Lấy giá trị image_url
+                        rs.getString("image_url") // Lấy giá trị image_url
                 );
             }
         } catch (Exception e) {
@@ -149,23 +148,24 @@ public class TutorDAO extends DBContext {
 
     public List<Schedule> getScheduleByTutor(int tutorID) {
         List<Schedule> schedules = new ArrayList<>();
-        String sql = "SELECT " +
-                 "    s.ScheduleID, " +
-                 "    s.TutorID, " +
-                 "    s.StudentID, " +
-                 "    s.DayOfWeek, " +
-                 "    s.StartTime, " +
-                 "    s.EndTime, " +
-                 "    c.CourseName, " +
-                 "    u.Name AS HocSinh " +
-                 "FROM Schedules s " +
-                 "JOIN Students st ON s.StudentID = st.StudentID " +
-                 "JOIN Users u ON st.UserID = u.UserID " +
-                 "JOIN Courses c ON st.CourseID = c.CourseID " +
-                 "WHERE s.TutorID = ? " + // Thêm điều kiện lọc TutorID
-                 "ORDER BY s.DayOfWeek, s.StartTime;";
+        String sql = "SELECT "
+                + "    s.ScheduleID, "
+                + "    s.TutorID, "
+                + "    s.StudentID, "
+                + "    s.DayOfWeek, "
+                + "    s.StartTime, "
+                + "    s.EndTime, "
+                + "    c.CourseName, "
+                + "    u.Name AS HocSinh "
+                + "FROM Schedules s "
+                + "JOIN Students st ON s.StudentID = st.StudentID "
+                + "JOIN Users u ON st.UserID = u.UserID "
+                + "JOIN Courses c ON st.CourseID = c.CourseID "
+                + "WHERE s.TutorID = ? "
+                + // Thêm điều kiện lọc TutorID
+                "ORDER BY s.DayOfWeek, s.StartTime;";
 
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try ( PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, tutorID);
             ResultSet rs = ps.executeQuery();
 
@@ -187,11 +187,10 @@ public class TutorDAO extends DBContext {
         }
         return schedules;
     }
-    
-    
+
     public boolean addSchedule(int tutorID, int studentID, String dayOfWeek, String startTime, String endTime) {
         String sql = "INSERT INTO Schedules (TutorID, StudentID, DayOfWeek, StartTime, EndTime) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try ( PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, tutorID);
             ps.setInt(2, studentID);
             ps.setString(3, dayOfWeek);
@@ -203,27 +202,27 @@ public class TutorDAO extends DBContext {
         }
         return false;
     }
-    
+
     public List<Courses> getCoursesByTutorId(int tutorID) {
         List<Courses> courses = new ArrayList<>();
-        String sql = "SELECT c.CourseID, c.CourseName, c.Description, c.Level, c.Price, c.Rating, c.TotalSessions, c.CourseStatus " +
-                     "FROM TutorCourses tc " +
-                     "JOIN Courses c ON tc.CourseID = c.CourseID " +
-                     "WHERE tc.TutorID = ?";
+        String sql = "SELECT c.CourseID, c.CourseName, c.Description, c.Level, c.Price, c.Rating, c.TotalSessions, c.CourseStatus "
+                + "FROM TutorCourses tc "
+                + "JOIN Courses c ON tc.CourseID = c.CourseID "
+                + "WHERE tc.TutorID = ?";
 
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try ( PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, tutorID);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Courses course = new Courses(
-                    rs.getInt("CourseID"),
-                    rs.getString("CourseName"),
-                    rs.getString("Description"),
-                    rs.getString("Level"),
-                    rs.getDouble("Price"),
-                    rs.getFloat("Rating"),
-                    rs.getInt("TotalSessions"),   // ✅ Thêm số buổi học
-                    rs.getString("CourseStatus")  // ✅ Thêm trạng thái khóa học
+                        rs.getInt("CourseID"),
+                        rs.getString("CourseName"),
+                        rs.getString("Description"),
+                        rs.getString("Level"),
+                        rs.getDouble("Price"),
+                        rs.getFloat("Rating"),
+                        rs.getInt("TotalSessions"), // ✅ Thêm số buổi học
+                        rs.getString("CourseStatus") // ✅ Thêm trạng thái khóa học
                 );
                 courses.add(course);
             }
@@ -232,11 +231,11 @@ public class TutorDAO extends DBContext {
         }
         return courses;
     }
-    
+
     // Cập nhật ảnh của gia sư trong profile
-    public boolean updateTutorProfileByUserId(int userId, String fullName, String gender, String address, 
-                                          String phoneNumber, String education, String experience, 
-                                          double hourlyRate, String imageUrl) {
+    public boolean updateTutorProfileByUserId(int userId, String fullName, String gender, String address,
+            String phoneNumber, String education, String experience,
+            double hourlyRate, String imageUrl) {
         String updateUsersSQL = "UPDATE Users SET Name=?, Gender=?, Address=?, Phone=?, image_url=? WHERE UserID=?";
         String updateTutorsSQL = "UPDATE Tutors SET Education=?, Experience=?, HourlyRate=? WHERE UserID=?";
         boolean isUpdated = false;
@@ -246,7 +245,7 @@ public class TutorDAO extends DBContext {
             connection.setAutoCommit(false);
 
             // Cập nhật bảng Users
-            try (PreparedStatement stmtUsers = connection.prepareStatement(updateUsersSQL)) {
+            try ( PreparedStatement stmtUsers = connection.prepareStatement(updateUsersSQL)) {
                 stmtUsers.setString(1, fullName);
                 stmtUsers.setString(2, gender);
                 stmtUsers.setString(3, address);
@@ -257,7 +256,7 @@ public class TutorDAO extends DBContext {
             }
 
             // Cập nhật bảng Tutors
-            try (PreparedStatement stmtTutors = connection.prepareStatement(updateTutorsSQL)) {
+            try ( PreparedStatement stmtTutors = connection.prepareStatement(updateTutorsSQL)) {
                 stmtTutors.setString(1, education);
                 stmtTutors.setString(2, experience);
                 stmtTutors.setDouble(3, hourlyRate);
@@ -286,7 +285,6 @@ public class TutorDAO extends DBContext {
         return isUpdated;
     }
 
-    
     public boolean editCourseForTutor(int courseID, String courseName, String description, String level, double price, int totalSessions, String courseStatus) {
         String sql = "UPDATE Courses SET CourseName = ?, Description = ?, Level = ?, Price = ?, TotalSessions = ? WHERE CourseID = ?";
         boolean success = false;
@@ -313,10 +311,10 @@ public class TutorDAO extends DBContext {
         }
         return success;
     }
-    
-    public boolean updateTutorProfileByUserId(int userId, String fullName, String gender, String address, 
-                                          String phoneNumber, String education, String experience, 
-                                          double hourlyRate) {
+
+    public boolean updateTutorProfileByUserId(int userId, String fullName, String gender, String address,
+            String phoneNumber, String education, String experience,
+            double hourlyRate) {
         String updateUsersSQL = "UPDATE Users SET Name=?, Gender=?, Address=?, Phone=? WHERE UserID=?";
         String updateTutorsSQL = "UPDATE Tutors SET Education=?, Experience=?, HourlyRate=? WHERE UserID=?";
         boolean isUpdated = false;
@@ -326,7 +324,7 @@ public class TutorDAO extends DBContext {
             connection.setAutoCommit(false);
 
             // Cập nhật bảng Users
-            try (PreparedStatement stmtUsers = connection.prepareStatement(updateUsersSQL)) {
+            try ( PreparedStatement stmtUsers = connection.prepareStatement(updateUsersSQL)) {
                 stmtUsers.setString(1, fullName);
                 stmtUsers.setString(2, gender);
                 stmtUsers.setString(3, address);
@@ -336,7 +334,7 @@ public class TutorDAO extends DBContext {
             }
 
             // Cập nhật bảng Tutors
-            try (PreparedStatement stmtTutors = connection.prepareStatement(updateTutorsSQL)) {
+            try ( PreparedStatement stmtTutors = connection.prepareStatement(updateTutorsSQL)) {
                 stmtTutors.setString(1, education);
                 stmtTutors.setString(2, experience);
                 stmtTutors.setDouble(3, hourlyRate);
@@ -364,16 +362,17 @@ public class TutorDAO extends DBContext {
 
         return isUpdated;
     }
+
     public List<Tutor> getAllTutors() {
         List<Tutor> tutorList = new ArrayList<>();
         // Cập nhật câu truy vấn để lấy image_url từ bảng Users
-        String sql = "SELECT T.TutorID, U.UserID, U.Name AS FullName, U.Email, U.Phone, " +
-                     "U.Gender, U.Address, U.image_url, " + // Thêm image_url vào câu truy vấn
-                     "T.Education, T.Experience, T.HourlyRate, T.Verified " +
-                     "FROM Tutors T JOIN Users U ON T.UserID = U.UserID";
+        String sql = "SELECT T.TutorID, U.UserID, U.Name AS FullName, U.Email, U.Phone, "
+                + "U.Gender, U.Address, U.image_url, "
+                + // Thêm image_url vào câu truy vấn
+                "T.Education, T.Experience, T.HourlyRate, T.Verified "
+                + "FROM Tutors T JOIN Users U ON T.UserID = U.UserID";
 
-        try (PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try ( PreparedStatement ps = connection.prepareStatement(sql);  ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 Tutor tutor = new Tutor(
@@ -388,7 +387,7 @@ public class TutorDAO extends DBContext {
                         rs.getString("Experience"),
                         rs.getDouble("HourlyRate"),
                         rs.getBoolean("Verified"),
-                        rs.getString("image_url")  // Thêm image_url vào đối tượng Tutor
+                        rs.getString("image_url") // Thêm image_url vào đối tượng Tutor
                 );
                 tutorList.add(tutor);
             }
@@ -432,10 +431,27 @@ public class TutorDAO extends DBContext {
         }
         return courseID;
     }
-    
-    
 
-    
+    public boolean addTutor(int userId, String education, String experience, double hourlyRate, boolean verified) {
+        String sql = "INSERT INTO Tutors (UserID, Education, Experience, HourlyRate, Verified) VALUES (?, ?, ?, ?, ?)";
+        boolean isAdded = false;
+
+        try ( PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setString(2, education);
+            ps.setString(3, experience);
+            ps.setDouble(4, hourlyRate);
+            ps.setBoolean(5, verified);
+
+            int affectedRows = ps.executeUpdate();
+            isAdded = affectedRows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return isAdded;
+    }
+
 //        public static void main(String[] args) {
 //        TutorDAO u = new TutorDAO();
 //       List<Tutor> tutor = u.getAllTutors();
@@ -445,5 +461,4 @@ public class TutorDAO extends DBContext {
 //       }
 //        System.out.println("---ket thuc");
 //    }
-
 }

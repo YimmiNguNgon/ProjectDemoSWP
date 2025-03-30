@@ -1,12 +1,14 @@
 package model;
 
 import java.sql.*;
+
 /**
  *
  * @author Huy
  */
 public class User {
-    private int id;    
+
+    private int id;
     private int role;
     private String email;
     private String fullName;
@@ -14,7 +16,8 @@ public class User {
     private String phoneNumber;
     private String gender;
     private String address;
-    private String imageUrl;  // Thêm trường image_url
+    private String imageUrl;
+    private int userId;// Thêm trường image_url
 
     public User() {
     }
@@ -29,6 +32,16 @@ public class User {
         this.gender = gender;
         this.address = address;
         this.imageUrl = imageUrl;  // Khởi tạo trường image_url
+    }
+
+    public User(int userId, int role, String name, String email, String pass, String phone, String gender) {
+        this.userId = userId;
+        this.role = role;
+        this.email = email;
+        this.fullName = name;
+        this.password = pass;
+        this.gender = this.gender;
+        this.phoneNumber = phone;
     }
 
     public int getId() {

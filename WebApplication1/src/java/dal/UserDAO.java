@@ -93,7 +93,7 @@ public class UserDAO extends DBContext {
 
     public int getTutorIDByUserID(int userID) {
         String sql = "SELECT TutorID FROM Tutors WHERE UserID = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try ( PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, userID);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -202,12 +202,12 @@ public class UserDAO extends DBContext {
                      [Address] = ?, [image_url] = ?
                  WHERE [UserID] = ?
                  """;
-        try (PreparedStatement st = connection.prepareStatement(sql)) {
+        try ( PreparedStatement st = connection.prepareStatement(sql)) {
             st.setString(1, user.getFullName());
             st.setString(2, user.getEmail());
             st.setString(3, user.getPhoneNumber());
             st.setString(4, user.getGender());
-            st.setString(5, user.getGender()); 
+            st.setString(5, user.getGender());
             st.setString(6, user.getAddress());
             st.setString(7, user.getImageUrl());
             st.setInt(8, user.getId());
@@ -437,7 +437,7 @@ public class UserDAO extends DBContext {
     // Trong lớp UserDAO
     public void insertStudent(String name, String email, String pass, String phone) {
         String sql = "INSERT INTO Users (role_id, Name, Email, Password, Phone) VALUES (?,?,?, ?,?)";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try ( PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, 4); // Sinh viên có role_id = 4
             ps.setString(2, name);
             ps.setString(3, email);
@@ -449,25 +449,46 @@ public class UserDAO extends DBContext {
         }
     }
 
-    public void insertTutor(String name, String email, String pass, String phone, int role) {
-        String sql = "INSERT INTO Users (role_id, Name, Email, Password, Phone) VALUES (?,?,?,?,?)";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, role); // Đặt role_id là 3 cho gia sư
+    public User insertTutor(String name, String email, String pass, String phone, String gender, int role) {
+        String sql = "INSERT INTO Users (role_id, Name, Email, Password, Phone, Gender, Address, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try ( PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, role);
             ps.setString(2, name);
             ps.setString(3, email);
-            ps.setString(4, pass); // Mật khẩu sẽ không mã hóa nếu chưa sử dụng mã hóa
+            ps.setString(4, pass);
             ps.setString(5, phone);
-            ps.executeUpdate();
-            System.out.println("Đăng ký gia sư thành công.");
+            ps.setString(6, gender);
+            ps.setString(7, "");  // Address mặc định rỗng
+            ps.setString(8, "");  // image_url mặc định rỗng
+
+            int affectedRows = ps.executeUpdate();
+            System.out.println("DEBUG: affectedRows = " + affectedRows);
+
+            if (affectedRows == 0) {
+                throw new SQLException("Không có bản ghi nào được chèn vào bảng Users.");
+            }
+
+            // Lấy ID vừa tạo từ database
+            try ( ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int userId = generatedKeys.getInt(1);
+                    System.out.println("DEBUG: ID được tạo: " + userId);
+                    return new User(userId, role, name, email, pass, phone, gender);
+                } else {
+                    throw new SQLException("Không lấy được ID từ generatedKeys.");
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
     }
 
 // Phương thức kiểm tra email đã tồn tại hay chưa
     private boolean isEmailExists(String email) {
         String query = "SELECT COUNT(*) FROM Users WHERE Email = ?";
-        try (PreparedStatement ps = connection.prepareStatement(query)) {
+        try ( PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
             if (rs.next() && rs.getInt(1) > 0) {
@@ -497,7 +518,7 @@ public class UserDAO extends DBContext {
 
     public static void updatePassword(Connection connection, String email, String newPassword) {
         String query = "UPDATE users SET password = ? WHERE email = ?";
-        try (PreparedStatement ps = connection.prepareStatement(query)) {
+        try ( PreparedStatement ps = connection.prepareStatement(query)) {
             ps.setString(1, newPassword);  // Chỉ cần sử dụng mật khẩu mới trực tiếp
             ps.setString(2, email);
             ps.executeUpdate();
@@ -506,10 +527,10 @@ public class UserDAO extends DBContext {
         }
     }
 
-   // Lưu token khôi phục mật khẩu
+    // Lưu token khôi phục mật khẩu
     public void saveResetToken(String email, String token) {
         String sql = "UPDATE Users SET reset_token = ? WHERE Email = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try ( PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, token);
             ps.setString(2, email);
             ps.executeUpdate();
@@ -521,9 +542,9 @@ public class UserDAO extends DBContext {
     // Lấy email dựa trên token
     public String getEmailByResetToken(String token) {
         String sql = "SELECT Email FROM Users WHERE reset_token = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try ( PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, token);
-            try (ResultSet rs = ps.executeQuery()) {
+            try ( ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return rs.getString("Email");
                 }
@@ -537,10 +558,10 @@ public class UserDAO extends DBContext {
     // Kiểm tra token có hợp lệ không
     public boolean isValidResetToken(String email, String token) {
         String sql = "SELECT * FROM Users WHERE Email = ? AND reset_token = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try ( PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, email);
             ps.setString(2, token);
-            try (ResultSet rs = ps.executeQuery()) {
+            try ( ResultSet rs = ps.executeQuery()) {
                 return rs.next();
             }
         } catch (SQLException e) {
@@ -552,8 +573,8 @@ public class UserDAO extends DBContext {
     // Cập nhật mật khẩu
     public void updatePassword(String email, String newPassword) {
         String sql = "UPDATE Users SET Password = ? WHERE Email = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, newPassword); 
+        try ( PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, newPassword);
             ps.setString(2, email);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -564,7 +585,7 @@ public class UserDAO extends DBContext {
     // Xóa token sau khi sử dụng
     public void clearResetToken(String email) {
         String sql = "UPDATE Users SET reset_token = NULL WHERE Email = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try ( PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, email);
             ps.executeUpdate();
         } catch (SQLException e) {

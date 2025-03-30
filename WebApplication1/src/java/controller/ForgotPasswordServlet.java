@@ -1,118 +1,83 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
-
 package controller;
 
-import com.sun.jdi.connect.spi.Connection;
 import dal.UserDAO;
-import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.User;
+import java.io.IOException;
+import java.util.Properties;
+import java.util.UUID;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
-/**
- *
- * @author Huy
- */
+@WebServlet("/forgotPassword")
 public class ForgotPasswordServlet extends HttpServlet {
-   
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ForgotPasswordServlet</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ForgotPasswordServlet at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    } 
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
-     * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+    private UserDAO userDAO = new UserDAO();
+
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        processRequest(request, response);
-    } 
-
-    /** 
-     * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        //nhận email từ form 
         String email = request.getParameter("email");
-        String newPassword = request.getParameter("newPassword");
-        String confirmPassword = request.getParameter("confirmPassword");
-
-        // Kiểm tra xem mật khẩu mới và mật khẩu xác nhận có trùng khớp không
-        if (newPassword.equals(confirmPassword)) {
-            Connection connection = null;
-            try {
-                // Lấy kết nối từ DataSource hoặc DriverManager
-//                connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/yourdb", "youruser", "yourpassword");
-//
-//                // Gọi DAL để cập nhật mật khẩu vào cơ sở dữ liệu
-//                boolean success = UserDAO.updatePassword(connection, email, newPassword);
-
-//                if (success) {
-//                    // Chuyển hướng về trang đăng nhập hoặc trang thông báo thành công
-//                    response.sendRedirect("login.jsp?status=success");
-//                } else {
-//                    response.sendRedirect("resetPasswordPage.jsp?status=error");
-//                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                response.sendRedirect("resetPasswordPage.jsp?status=error");
-            } finally {
-                // Đảm bảo đóng kết nối sau khi sử dụng
-                if (connection != null) {
-                    try {
-                        connection.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        } else {
-            response.sendRedirect("resetPasswordPage.jsp?status=password_mismatch");
+        
+        // kiểm tra email có tồn tại
+        User user = userDAO.getUserByEmail(email);
+        if (user == null) {
+            request.setAttribute("error", "Email does not exist in the system.");
+            request.getRequestDispatcher("forgotpassword.jsp").forward(request, response);
+            return;
         }
+        
+        
+        //tạo token reset
+        String token = UUID.randomUUID().toString();
+        userDAO.saveResetToken(email, token); 
+        //tạo liên kết reset
+        String resetLink = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+        
+                + request.getContextPath() + "/resetPassword?token=" + token;
+        // gửi email chứa liên kết reset
+        sendResetEmail(email, resetLink);
+
+        
+        request.setAttribute("message", "A password reset link has been sent to your email.");
+        request.getRequestDispatcher("forgotpassword.jsp").forward(request, response);
     }
 
-    /** 
-     * Returns a short description of the servlet.
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
+    private void sendResetEmail(String toEmail, String resetLink) {
+        final String fromEmail = "huyhdhe187019@fpt.edu.vn"; 
+        final String password = "lbmnsbvdlkajnyga"; 
 
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(fromEmail, password);
+            }
+        });
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(fromEmail));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+            message.setSubject("Password Reset");
+            message.setText("Click the link below to reset your password: " + resetLink);
+            Transport.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
 }

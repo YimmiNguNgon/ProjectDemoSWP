@@ -5,21 +5,19 @@
 
 package controller;
 
+import dal.CourseDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 /**
  *
  * @author Huy
  */
-@WebServlet(name="logout", urlPatterns={"/logout"})
-public class LogoutServlet extends HttpServlet {
+public class Deletecourse extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -33,15 +31,11 @@ public class LogoutServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet LogoutServlet</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet LogoutServlet at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+                String cid = request.getParameter("courseId");
+                int ccid = Integer.parseInt(cid);
+                CourseDAO courseDAO = new CourseDAO();
+                courseDAO.deleteCourse(ccid);
+                request.getRequestDispatcher("managercourse").forward(request, response);   
         }
     } 
 
@@ -69,13 +63,7 @@ public class LogoutServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-      HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-        
-        // Chuyển hướng về trang login
-        response.sendRedirect(request.getContextPath() + "/login.jsp"); // Chuyển hướng về trang login
+        processRequest(request, response);
     }
 
     /** 
