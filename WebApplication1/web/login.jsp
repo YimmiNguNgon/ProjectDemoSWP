@@ -405,7 +405,7 @@ h2.text-center {
                 </div>
                 <div class="form-check my-3 text-start">
                     <input type="checkbox" class="form-check-input" id="rememberMe">
-                    <label class="form-check-label" for="rememberMe">Remember me</label>
+                    <label class="form-check-label" for="rememberMe">Ghi nhớ tôi</label>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Đăng Nhập</button>
                 <c:if test="${not empty error}">
@@ -475,7 +475,7 @@ h2.text-center {
         document.getElementById("loginContainer").classList.toggle("right-panel-active");
         if (document.getElementById("loginContainer").classList.contains("right-panel-active")) {
             document.getElementById("overlayTitle").innerText = "Chào mừng bạn đã quay trở lại!";
-            document.getElementById("overlayText").innerText = "";
+            
         } else {
             document.getElementById("overlayTitle").innerText = "Xin chàooooo !";
             document.getElementById("overlayText").innerText = "Nhập thông tin của bạn và bắt đầu hành trình cùng EduOnline";

@@ -257,10 +257,10 @@ button[type="submit"]:hover {
             </div>
 
             <!-- Right column for course history -->
-            <div class="col-md-6 course-history">
+<!--            <div class="col-md-6 course-history">
                 <h3>Lịch Sử Đăng Ký Khóa Học</h3>
 
-                <!-- Check if there are any courses -->
+                 Check if there are any courses 
                 <c:if test="${not empty students}">
                     <table class="table table-bordered">
                         <thead>
@@ -287,7 +287,7 @@ button[type="submit"]:hover {
                 <c:if test="${empty students}">
                     <p>Chưa đăng ký khóa học nào.</p>
                 </c:if>
-            </div>
+            </div>-->
         </div>
     </div>
 
@@ -297,43 +297,47 @@ button[type="submit"]:hover {
             <span class="close-btn" onclick="closeModal()">&times;</span>
             <h3>Chỉnh Sửa Thông Tin Sinh Viên</h3>
             <form action="editStudentProfileServlet" method="post">
-                <input type="hidden" name="userId" value="${user.id}" />
-        
-                <div class="form-group">
-                    <label>Họ tên:</label>
-                    <input type="text" name="fullName" value="${user.fullName}" required />
-                </div>
+    <input type="hidden" name="userId" value="${user.id}" />
 
-                <div class="form-group">
-                    <label>Email:</label>
-                    <input type="email" name="email" value="${user.email}" required />
-                </div>
+    <div class="form-group">
+        <label>Họ tên:</label>
+        <input type="text" name="fullName" value="${user.fullName}" required />
+    </div>
 
-                <div class="form-group">
-                    <label>Số điện thoại:</label>
-                    <input type="text" name="phoneNumber" value="${user.phoneNumber}" required />
-                </div>
+    <div class="form-group">
+        <label>Email:</label>
+        <input type="email" name="email" value="${user.email}" 
+               pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.com" 
+               title="Email phải chứa @ và kết thúc bằng .com" required />
+    </div>
 
-                <div class="form-group">
-                    <label>Giới tính:</label>
-                    <select name="gender">
-                        <option value="Nam" ${user.gender == 'Nam' ? 'selected' : ''}>Male</option>
-                        <option value="Nữ" ${user.gender == 'Nữ' ? 'selected' : ''}>Female</option>
-                    </select>
-                </div>
+    <div class="form-group">
+        <label>Số điện thoại:</label>
+        <input type="text" name="phoneNumber" value="${user.phoneNumber}" 
+               pattern="0[0-9]{9}" 
+               title="Số điện thoại phải bắt đầu bằng số 0 và đủ 10 số" required />
+    </div>
 
-                <div class="form-group">
-                    <label>Địa chỉ:</label>
-                    <input type="text" name="address" value="${user.address}" required />
-                </div>
+    <div class="form-group">
+        <label>Giới tính:</label>
+        <select name="gender">
+            <option value="Nam" ${user.gender == 'Nam' ? 'selected' : ''}>Male</option>
+            <option value="Nữ" ${user.gender == 'Nữ' ? 'selected' : ''}>Female</option>
+        </select>
+    </div>
 
-                <div class="form-group">
-                    <label>Ảnh URL:</label>
-                    <input type="text" name="imageUrl" value="${user.imageUrl}" />
-                </div>
+    <div class="form-group">
+        <label>Địa chỉ:</label>
+        <input type="text" name="address" value="${user.address}" required />
+    </div>
 
-                <button type="submit">Lưu Thay Đổi</button>
-            </form>
+    <div class="form-group">
+        <label>Ảnh URL:</label>
+        <input type="text" name="imageUrl" value="${user.imageUrl}" />
+    </div>
+
+    <button type="submit">Lưu Thay Đổi</button>
+</form>
         </div>
     </div>
 

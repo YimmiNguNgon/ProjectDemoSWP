@@ -11,6 +11,9 @@
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     </head>
     <body>
+        <!-- Dùng JSTL để bind dữ liệu từ review object.
+        Sử dụng value="{review.rating != 0 ? review.rating : 1}" để gán giá trị mặc định nếu chưa có.
+        Dropdown cho reviewStatus có sẵn 4 mức độ (25%, 50%, 75%, 100%). -->
         <div class="container mt-5">
             <h2>Đánh giá buổi học</h2>
 

@@ -55,8 +55,17 @@
             }
         </style>
     </head>
+    
     <body>
-        
+    <!--        <div>
+            Mục đích:
+            Hiển thị form điểm danh
+            Tạo danh sách học viên dạng bảng với checkbox
+    
+            form gửi đến MarkAttendanceController bằng POST
+            Checkbox có tên theo pattern attended_<studentID>
+            Nếu student.attended == true thì checkbox được check sẵn
+        </div>-->
         <div class="container mt-5">
             <h2>Điểm danh học viên cho khóa học</h2>
             <form action="MarkAttendanceController" method="POST">

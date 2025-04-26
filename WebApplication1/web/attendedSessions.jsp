@@ -13,6 +13,9 @@
 </head>
 <body>
     <div class="container mt-5">
+        <!-- Hiển thị danh sách các buổi học đã điểm danh bằng bảng HTML.
+        Sử dụng JSTL để duyệt attendedSessions. -->
+            
         <h2>Các buổi học học viên đã điểm danh</h2>
         <table class="table table-bordered">
             <thead>

@@ -273,8 +273,8 @@
                     <div class="form-group">
                         <label>Giới tính:</label>
                         <select name="gender">
-                            <option value="Nam" ${sessionScope.user.gender == 'Nam' ? 'selected' : ''}>Nam</option>
-                            <option value="Nữ" ${sessionScope.user.gender == 'Nữ' ? 'selected' : ''}>Nữ</option>
+                            <option value="Nam" ${sessionScope.tutor.gender == 'Nam' ? 'selected' : ''}>Nam</option>
+                            <option value="Nữ" ${sessionScope.tutor.gender == 'Nữ' ? 'selected' : ''}>Nữ</option>
                         </select>
                     </div>
 
@@ -285,7 +285,11 @@
 
                     <div class="form-group">
                         <label>Số điện thoại:</label>
-                        <input type="text" name="phoneNumber" value="${sessionScope.tutor.phone}" required>
+                        <input type="text" name="phoneNumber" 
+                               value="${sessionScope.tutor.phoneNumber}" 
+                               pattern="0[0-9]{9}" 
+                               title="Số điện thoại phải bắt đầu bằng số 0 và đủ 10 chữ số" 
+                               required>
                     </div>
 
                     <div class="form-group">
@@ -300,7 +304,11 @@
 
                     <div class="form-group">
                         <label>Giá mỗi giờ dạy:</label>
-                        <input type="number" name="hourlyRate" value="${sessionScope.tutor.hourlyRate}" required>
+                        <input type="number" name="hourlyRate" 
+                               value="${sessionScope.tutor.hourlyRate}" 
+                               min="1" 
+                               title="Giá mỗi giờ phải lớn hơn 0" 
+                               required>
                     </div>
 
                     <button type="submit">Lưu Thay Đổi</button>

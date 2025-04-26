@@ -128,6 +128,10 @@
         </style>
     </head>
     <body>
+        <!--<div>
+            Hiển thị danh sách khóa học mà sinh viên đang theo học kèm trạng thái tiến trình 
+            (Đang diễn ra / Hoàn thành) và nút để xem danh sách điểm danh.
+        </div>-->
         <%@ include file="headerStudent.jsp" %>
         <div class="container">
             <h2 class="mt-5">Tiến trình khóa học</h2>
@@ -145,6 +149,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                    <!-- Duyệt qua từng Course từ danh sách. -->
                         <c:forEach var="course" items="${courses}">
                             <tr>
                                 <td>${course.courseName}</td>
@@ -163,6 +168,7 @@
                                     </c:choose>
                                 </td>
                                 <td>
+                                    <!-- Nút “Điểm Danh” dẫn tới servlet StudentAttendedSessionsController với studentId. -->
                                     <a class="btn btn-primary" href="StudentAttendedSessionsController?studentId=${course.studentId}">Điểm Danh</a>
                                 </td>
                             </tr>
